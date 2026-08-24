@@ -1,0 +1,7 @@
+{
+  "plugins": [
+    "prettier-plugin-pyramid-imports",
+    "prettier-plugin-pyramid-interface-keys",
+    "prettier-plugin-pyramid-jsx-attributes"
+  ]
+}

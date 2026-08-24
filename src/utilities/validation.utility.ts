@@ -1,0 +1,41 @@
+import {
+  validateId,
+  validateName,
+  validateEmail,
+  validateNumber,
+  validatePassword,
+  validateHebrewText,
+  validatePhoneNumber,
+} from "./validators";
+
+import type { IValidationResult } from "../interfaces/validation-result.interface";
+import { type TFieldType } from "../components/TextField/constants/textfield.constants";
+
+const builtInValidators: Record<
+  TFieldType,
+  (val: string) => IValidationResult
+> = {
+  tz: (val) => validateId(val),
+  name: (val) => validateName(val),
+  email: (val) => validateEmail(val),
+  number: (val) => validateNumber(val),
+  text: (val) => validateHebrewText(val),
+  phone: (val) => validatePhoneNumber(val),
+  password: (val) => validatePassword(val),
+};
+
+export const validateInput = (
+  value: string,
+  type: TFieldType,
+  customValidator?: (val: string) => IValidationResult,
+): IValidationResult => {
+  const stringValue = value?.toString() ?? "";
+
+  if (customValidator) {
+    return customValidator(stringValue);
+  }
+
+  const validate = builtInValidators[type] || builtInValidators.text;
+
+  return validate(stringValue);
+};
