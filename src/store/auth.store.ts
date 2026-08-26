@@ -9,20 +9,24 @@ interface IAuthState {
   accessToken: string | null;
 }
 
-export const authStore = create<IAuthState>(() => ({
+export const useAuthStore = create<IAuthState>(() => ({
   user: null,
   accessToken: null,
 }));
 
-export const getAccessToken = () => authStore.getState().accessToken;
+export const useCurrentUser = () => useAuthStore((state) => state.user);
 
-export const getCurrentUser = () => authStore.getState().user;
+export const useAccessToken = () => useAuthStore((state) => state.accessToken);
+
+export const getAccessToken = () => useAuthStore.getState().accessToken;
+
+export const getCurrentUser = () => useAuthStore.getState().user;
 
 export const getIsAuthenticated = () => getAccessToken() !== null;
 
 export const setSession = (session: IAuthSession) => {
   WebLocalStorageManager.setJson(LOCAL_STORAGE_KEYS.AUTH_SESSION, session);
-  authStore.setState({
+  useAuthStore.setState({
     user: session.user,
     accessToken: session.accessToken,
   });
@@ -30,7 +34,7 @@ export const setSession = (session: IAuthSession) => {
 
 export const clearSession = () => {
   WebLocalStorageManager.removeItem(LOCAL_STORAGE_KEYS.AUTH_SESSION);
-  authStore.setState({ user: null, accessToken: null });
+  useAuthStore.setState({ user: null, accessToken: null });
 };
 
 export const restoreSession = () => {
@@ -43,7 +47,7 @@ export const restoreSession = () => {
     return;
   }
 
-  authStore.setState({
+  useAuthStore.setState({
     user: session.user,
     accessToken: session.accessToken,
   });

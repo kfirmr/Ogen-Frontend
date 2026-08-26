@@ -6,12 +6,19 @@ import {
   CATEGORY_EXPENSES,
 } from "./constants/home.constants";
 
+import {
+  getLevelCaption,
+  getLevelXpLabel,
+  getLevelHeadline,
+  getLevelProgressPercent,
+} from "../../utilities/level.utility";
+
 import { useState } from "react";
 import { useStyles } from "./HomePage.style";
 import BottomNav from "./components/BottomNav";
 import HomeHeader from "./components/HomeHeader";
 import UploadCard from "./components/UploadCard";
-import { authStore } from "../../store/auth.store";
+import { useCurrentUser } from "../../store/auth.store";
 import CategoriesCard from "./components/CategoriesCard";
 import FoundMoneyCard from "./components/FoundMoneyCard";
 import SaverLevelCard from "./components/SaverLevelCard";
@@ -20,11 +27,13 @@ import TransactionsCard from "./components/TransactionsCard";
 import SubscriptionsCard from "./components/SubscriptionsCard";
 import GuideSteps from "../../components/GuideSteps/GuideSteps";
 import GuideModal from "../../components/GuideModal/GuideModal";
+import { useUserProgress } from "../../hooks/user-progress.hook";
 
 const HomePage = () => {
   const styles = useStyles();
-  const user = authStore((state) => state.user);
+  const user = useCurrentUser();
   const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const userProgress = useUserProgress();
 
   const name = user?.fullName ?? "";
 
@@ -34,8 +43,8 @@ const HomePage = () => {
     <AppShell sx={styles.shell}>
       <HomeHeader
         name={name}
-        level="רמה 4 · חוסך זהיר"
         avatarInitial={name.charAt(0)}
+        level={getLevelHeadline(userProgress)}
       />
 
       <FoundMoneyCard
@@ -47,10 +56,10 @@ const HomePage = () => {
       />
 
       <SaverLevelCard
-        progress={68}
         title="דרגת חוסך"
-        xpLabel="רמה 4 · 680 XP"
-        caption="עוד 50 ₪ החודש כדי להגיע לדרגת הזהב."
+        xpLabel={getLevelXpLabel(userProgress)}
+        caption={getLevelCaption(userProgress)}
+        progress={getLevelProgressPercent(userProgress)}
       />
 
       <UploadCard onOpenGuide={() => setIsGuideOpen(true)} />

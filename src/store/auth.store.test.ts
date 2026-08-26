@@ -1,7 +1,7 @@
 import {
-  authStore,
   setSession,
   clearSession,
+  useAuthStore,
   getAccessToken,
   restoreSession,
   getIsAuthenticated,
@@ -34,17 +34,17 @@ describe("auth.store", () => {
 
     expect(getIsAuthenticated()).toBe(true);
     expect(getAccessToken()).toBe(SESSION.accessToken);
-    expect(authStore.getState().user).toEqual(SESSION.user);
+    expect(useAuthStore.getState().user).toEqual(SESSION.user);
   });
 
   it("persists the session so a refresh keeps the user signed in", () => {
     setSession(SESSION);
-    authStore.setState({ user: null, accessToken: null });
+    useAuthStore.setState({ user: null, accessToken: null });
 
     restoreSession();
 
     expect(getAccessToken()).toBe(SESSION.accessToken);
-    expect(authStore.getState().user).toEqual(SESSION.user);
+    expect(useAuthStore.getState().user).toEqual(SESSION.user);
   });
 
   it("clears the persisted session on logout", () => {
