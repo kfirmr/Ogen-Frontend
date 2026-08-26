@@ -69,6 +69,14 @@ export const useStyles = () =>
       color: theme.colors.muted,
       fontFamily: theme.fonts.body,
     },
+    error: {
+      fontSize: 14,
+      fontWeight: 600,
+      marginBottom: 16,
+      textAlign: "center" as const,
+      color: theme.colors.error,
+      fontFamily: theme.fonts.body,
+    },
     footerLink: {
       textDecoration: "none",
       color: theme.colors.greenDark,

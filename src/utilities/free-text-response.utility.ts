@@ -1,3 +1,8 @@
+import {
+  FREE_TEXT_STATUS,
+  FREE_TEXT_VALIDATION_ACTION,
+} from "../constants/free-text.constants";
+
 import type {
   ITokenResult,
   ISuggestResponse,
@@ -7,10 +12,6 @@ import type {
 } from "../interfaces/free-text.interface";
 
 import type { TFreeTextValidationActionType } from "../constants/free-text.constants";
-import {
-  FREE_TEXT_STATUS,
-  FREE_TEXT_VALIDATION_ACTION,
-} from "../constants/free-text.constants";
 
 const FREE_TEXT_STATUS_VALUES: readonly string[] =
   Object.values(FREE_TEXT_STATUS);

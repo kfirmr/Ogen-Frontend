@@ -1,9 +1,10 @@
-import { createStyles } from "../../create-styles";
-import { theme } from "../../constants/theme.constants";
 import {
   type TProgressBarTone,
   PROGRESS_BAR_TONE_FILL,
 } from "./constants/progress-bar.constants";
+
+import { createStyles } from "../../create-styles";
+import { theme } from "../../constants/theme.constants";
 
 const clampToPercent = (value: number) => Math.min(Math.max(value, 0), 100);
 

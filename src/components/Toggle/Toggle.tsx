@@ -1,12 +1,13 @@
+import {
+  type FC,
+  useState,
+  useEffect,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
+
 import { useStyles } from "./Toggle.style";
 import { Box, ButtonBase } from "@mui/material";
-import {
-  type Dispatch,
-  type FC,
-  type SetStateAction,
-  useEffect,
-  useState,
-} from "react";
 
 interface IToggleProps {
   value: boolean;

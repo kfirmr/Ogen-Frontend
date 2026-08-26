@@ -1,19 +1,21 @@
+import {
+  Typography,
+  type TextFieldProps,
+  TextField as MuiTextField,
+} from "@mui/material";
+
+import {
+  type TFieldType,
+  KEYBOARD_TYPE_MAP,
+} from "./constants/textfield.constants";
+
 import { useStyles } from "./TextField.style";
 import CharCounterAdornment from "./CharCounter";
 import { safeAssign } from "../../utilities/object.utility";
 import { getHelperText } from "../../utilities/textfield.utility";
 import { validateInput } from "../../utilities/validation.utility";
 import { type ChangeEvent, type FC, useState, useEffect } from "react";
-import {
-  type TFieldType,
-  KEYBOARD_TYPE_MAP,
-} from "./constants/textfield.constants";
 import { type IValidationResult } from "../../interfaces/validation-result.interface";
-import {
-  Typography,
-  type TextFieldProps,
-  TextField as MuiTextField,
-} from "@mui/material";
 
 export type TTextfieldProps = Omit<TextFieldProps, "onChange"> & {
   value: string;

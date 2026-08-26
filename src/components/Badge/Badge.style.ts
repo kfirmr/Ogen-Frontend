@@ -1,9 +1,10 @@
-import { createStyles } from "../../create-styles";
-import { theme } from "../../constants/theme.constants";
 import {
   type TBadgeTone,
   BADGE_TONE_STYLES,
 } from "./constants/badge.constants";
+
+import { createStyles } from "../../create-styles";
+import { theme } from "../../constants/theme.constants";
 
 export const useStyles = () =>
   createStyles({

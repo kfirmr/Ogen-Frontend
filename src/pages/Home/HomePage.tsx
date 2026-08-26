@@ -11,7 +11,7 @@ import { useStyles } from "./HomePage.style";
 import BottomNav from "./components/BottomNav";
 import HomeHeader from "./components/HomeHeader";
 import UploadCard from "./components/UploadCard";
-import { userStore } from "../../store/user.store";
+import { authStore } from "../../store/auth.store";
 import CategoriesCard from "./components/CategoriesCard";
 import FoundMoneyCard from "./components/FoundMoneyCard";
 import SaverLevelCard from "./components/SaverLevelCard";
@@ -23,8 +23,10 @@ import GuideModal from "../../components/GuideModal/GuideModal";
 
 const HomePage = () => {
   const styles = useStyles();
-  const name = userStore((state) => state.name);
+  const user = authStore((state) => state.user);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
+
+  const name = user?.fullName ?? "";
 
   const handleGuideConfirm = async () => {};
 

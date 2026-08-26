@@ -1,8 +1,8 @@
 import {
+  useRef,
+  useEffect,
   type DependencyList,
   type MutableRefObject,
-  useEffect,
-  useRef,
 } from "react";
 
 interface IUseDebouncedAbortableCallbackOptions {

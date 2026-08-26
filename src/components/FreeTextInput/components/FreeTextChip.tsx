@@ -1,12 +1,13 @@
+import {
+  getFreeTextChipLabel,
+  getFreeTextChipPalette,
+} from "../../../utilities/free-text.utility";
+
 import { type MouseEvent } from "react";
 import { Close } from "@mui/icons-material";
 import { Box, Tooltip } from "@mui/material";
 import { useStyles } from "./FreeTextChip.style";
 import type { TFreeTextStatusType } from "../../../constants/free-text.constants";
-import {
-  getFreeTextChipLabel,
-  getFreeTextChipPalette,
-} from "../../../utilities/free-text.utility";
 
 interface IFreeTextChipProps {
   word: string;

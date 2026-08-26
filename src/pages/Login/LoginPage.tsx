@@ -1,21 +1,50 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useStyles } from "./LoginPage.style";
 import mailIcon from "../../assets/icons/mail.png";
 import lockIcon from "../../assets/icons/lock.png";
 import Button from "../../components/Button/Button";
+import { Link, useNavigate } from "react-router-dom";
 import anchorIcon from "../../assets/icons/anchor.png";
+import { loginAction } from "../../actions/auth.actions";
 import AppShell from "../../components/AppShell/AppShell";
 import CheckBox from "../../components/CheckBox/CheckBox";
 import TextField from "../../components/TextField/TextField";
+import { AUTH_ROUTES } from "../../constants/auth.constants";
+import { getLoginFormError } from "../../utilities/auth-form.utility";
 
 const LoginPage = () => {
   const styles = useStyles();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("12345678");
+  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleLogin = async () => {};
+  const handleLogin = async () => {
+    const formError = getLoginFormError({ email, password });
+
+    if (formError !== null) {
+      setErrorMessage(formError);
+
+      return;
+    }
+
+    setErrorMessage(null);
+    setIsLoading(true);
+
+    const result = await loginAction({ email: email.trim(), password });
+
+    setIsLoading(false);
+
+    if (result.errorMessage !== null) {
+      setErrorMessage(result.errorMessage);
+
+      return;
+    }
+
+    navigate(AUTH_ROUTES.HOME);
+  };
 
   return (
     <AppShell>
@@ -57,7 +86,9 @@ const LoginPage = () => {
         <Button variant="text" text="שכחת סיסמה?" onClick={() => {}} />
       </div>
 
-      <Button text="התחבר" onClick={handleLogin} />
+      {errorMessage !== null && <p style={styles.error}>{errorMessage}</p>}
+
+      <Button text="התחבר" isLoading={isLoading} onClick={handleLogin} />
 
       <p style={styles.footer}>
         עדיין אין לך חשבון?{" "}

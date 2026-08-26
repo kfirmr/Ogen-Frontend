@@ -1,9 +1,10 @@
-import { createStyles } from "../../create-styles";
-import { theme } from "../../constants/theme.constants";
 import {
   type TGuideStepTone,
   GUIDE_STEP_TONE_STYLES,
 } from "./constants/guide-steps.constants";
+
+import { createStyles } from "../../create-styles";
+import { theme } from "../../constants/theme.constants";
 
 export const useStyles = () =>
   createStyles({

@@ -5,29 +5,56 @@ import mailIcon from "../../assets/icons/mail.png";
 import lockIcon from "../../assets/icons/lock.png";
 import Button from "../../components/Button/Button";
 import { Link, useNavigate } from "react-router-dom";
-import { setUserName } from "../../store/user.store";
 import anchorIcon from "../../assets/icons/anchor.png";
+import { signUpAction } from "../../actions/auth.actions";
 import AppShell from "../../components/AppShell/AppShell";
 import CheckBox from "../../components/CheckBox/CheckBox";
 import TextField from "../../components/TextField/TextField";
+import { AUTH_ROUTES } from "../../constants/auth.constants";
+import { getSignUpFormError } from "../../utilities/auth-form.utility";
 
 const SignUpPage = () => {
   const styles = useStyles();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("12345678");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSignUp = async () => {
-    const trimmedName = name.trim();
+    const formError = getSignUpFormError({
+      email,
+      password,
+      agreedToTerms,
+      fullName: name,
+    });
 
-    if (!trimmedName) {
+    if (formError !== null) {
+      setErrorMessage(formError);
+
       return;
     }
 
-    setUserName(trimmedName);
-    navigate("/");
+    setErrorMessage(null);
+    setIsLoading(true);
+
+    const result = await signUpAction({
+      password,
+      email: email.trim(),
+      fullName: name.trim(),
+    });
+
+    setIsLoading(false);
+
+    if (result.errorMessage !== null) {
+      setErrorMessage(result.errorMessage);
+
+      return;
+    }
+
+    navigate(AUTH_ROUTES.HOME);
   };
 
   return (
@@ -85,7 +112,9 @@ const SignUpPage = () => {
         />
       </div>
 
-      <Button text="יצירת חשבון" onClick={handleSignUp} />
+      {errorMessage !== null && <p style={styles.error}>{errorMessage}</p>}
+
+      <Button text="יצירת חשבון" isLoading={isLoading} onClick={handleSignUp} />
 
       <div style={styles.divider} />
       <p style={styles.footer}>
