@@ -1,5 +1,11 @@
+import {
+  DATE_FORMAT,
+  HEBREW_MONTH_FULL_NAMES,
+  HEBREW_MONTH_SHORT_NAMES,
+} from "../constants/date.constants";
+
 import moment from "moment";
-import { DATE_FORMAT } from "../constants/date.constants";
+import type { IMonthOption } from "../interfaces/date.interface";
 import type { IDateRange } from "../components/DatePicker/interfaces/date-range.interface";
 
 export const isSameDate = (a: Date | null, b: Date | null): boolean => {
@@ -42,3 +48,25 @@ export const formatDate = (
 
   return moment(date).format(format);
 };
+
+export const getDaysAgo = (date: string): number =>
+  moment().startOf("day").diff(moment(date).startOf("day"), "days");
+
+export const getRecentMonths = ({
+  count,
+  from = new Date(),
+}: {
+  count: number;
+  from?: Date;
+}): IMonthOption[] =>
+  Array.from({ length: count }, (_, index) => {
+    const date = moment(from).subtract(count - 1 - index, "months");
+    const monthIndex = date.month();
+
+    return {
+      key: date.format(DATE_FORMAT.MONTHS_YEAR),
+      year: date.format("YY"),
+      short: HEBREW_MONTH_SHORT_NAMES[monthIndex],
+      fullLabel: HEBREW_MONTH_FULL_NAMES[monthIndex],
+    };
+  });

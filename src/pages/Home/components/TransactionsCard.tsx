@@ -2,12 +2,12 @@ import type { FC } from "react";
 import Card from "../../../components/Card/Card";
 import { useStyles } from "./TransactionsCard.style";
 import Button from "../../../components/Button/Button";
-import type { ITransaction } from "../constants/home.constants";
+import type { ITransactionView } from "../../../interfaces/transaction.interface";
 
 interface ITransactionsCardProps {
   title: string;
   allText: string;
-  transactions: ITransaction[];
+  transactions: ITransactionView[];
 }
 
 const TransactionsCard: FC<ITransactionsCardProps> = ({
@@ -26,7 +26,7 @@ const TransactionsCard: FC<ITransactionsCardProps> = ({
 
       {transactions.map((transaction, index) => (
         <div
-          key={transaction.name}
+          key={transaction.id}
           style={styles.row({ isLast: index === transactions.length - 1 })}
         >
           <img alt="" style={styles.icon} src={transaction.icon} />

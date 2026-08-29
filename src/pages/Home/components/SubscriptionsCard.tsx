@@ -2,12 +2,12 @@ import type { FC } from "react";
 import Card from "../../../components/Card/Card";
 import { useStyles } from "./SubscriptionsCard.style";
 import Button from "../../../components/Button/Button";
-import type { ISubscription } from "../constants/home.constants";
+import type { ISubscriptionView } from "../../../interfaces/subscription.interface";
 
 interface ISubscriptionsCardProps {
   title: string;
   subtitle: string;
-  subscriptions: ISubscription[];
+  subscriptions: ISubscriptionView[];
 }
 
 const SubscriptionsCard: FC<ISubscriptionsCardProps> = ({
@@ -27,7 +27,7 @@ const SubscriptionsCard: FC<ISubscriptionsCardProps> = ({
       <div style={styles.list}>
         {subscriptions.map((subscription) => (
           <Card
-            key={subscription.name}
+            key={subscription.id}
             sx={{
               gap: 12,
               display: "flex",

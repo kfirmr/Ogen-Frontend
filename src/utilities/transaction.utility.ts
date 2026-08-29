@@ -1,0 +1,105 @@
+import {
+  VENDOR_CATEGORY_ICONS,
+  VENDOR_CATEGORY_LABELS,
+  FALLBACK_VENDOR_CATEGORY,
+} from "../constants/vendor.constants";
+
+import {
+  TRANSACTION_LABELS,
+  CATEGORY_EXPENSE_COLORS,
+  RECENT_TRANSACTIONS_COUNT,
+  TOP_EXPENSE_CATEGORIES_COUNT,
+} from "../constants/transaction.constants";
+
+import type {
+  ITransaction,
+  ITransactionView,
+} from "../interfaces/transaction.interface";
+
+import { formatExpense } from "./money.utility";
+import { DATE_FORMAT } from "../constants/date.constants";
+import { formatDate, getDaysAgo, normalizeDate } from "./date.utility";
+import type { ICategoryExpense } from "../interfaces/expense.interface";
+import type { TVendorCategoryType } from "../constants/vendor.constants";
+
+const DAY_LABELS: Record<number, string> = {
+  0: TRANSACTION_LABELS.TODAY,
+  1: TRANSACTION_LABELS.YESTERDAY,
+};
+
+const getTransactionCategory = (
+  transaction: ITransaction,
+): TVendorCategoryType =>
+  transaction.vendor?.category ?? FALLBACK_VENDOR_CATEGORY;
+
+const getTransactionName = (transaction: ITransaction): string =>
+  transaction.vendor?.name ?? transaction.originalDescription;
+
+const getTransactionTime = (transaction: ITransaction): string => {
+  const dayLabel = DAY_LABELS[getDaysAgo(transaction.transactionDate)];
+
+  if (dayLabel != null) {
+    return dayLabel;
+  }
+
+  return formatDate(
+    normalizeDate(transaction.transactionDate),
+    DATE_FORMAT.DATE_DOTS,
+  );
+};
+
+const getTransactionAmount = (transaction: ITransaction): string =>
+  formatExpense({
+    amount: transaction.amount,
+    currency: transaction.currency,
+  }) ?? TRANSACTION_LABELS.UNKNOWN_AMOUNT;
+
+const getTransactionValue = (transaction: ITransaction): number => {
+  const amount = Number.parseFloat(transaction.amount);
+
+  if (Number.isNaN(amount)) {
+    return 0;
+  }
+
+  return amount;
+};
+
+const sumByCategory = (
+  transactions: ITransaction[],
+): Map<TVendorCategoryType, number> =>
+  transactions.reduce((totals, transaction) => {
+    const category = getTransactionCategory(transaction);
+    const total = totals.get(category) ?? 0;
+
+    return totals.set(category, total + getTransactionValue(transaction));
+  }, new Map<TVendorCategoryType, number>());
+
+const byDescendingDate = (first: ITransaction, second: ITransaction): number =>
+  second.transactionDate.localeCompare(first.transactionDate);
+
+export const toCategoryExpenses = (
+  transactions: ITransaction[],
+): ICategoryExpense[] =>
+  [...sumByCategory(transactions).entries()]
+    .sort(([, first], [, second]) => second - first)
+    .slice(0, TOP_EXPENSE_CATEGORIES_COUNT)
+    .map(([category, value], index) => ({
+      value: Math.round(value),
+      icon: VENDOR_CATEGORY_ICONS[category],
+      label: VENDOR_CATEGORY_LABELS[category],
+      color: CATEGORY_EXPENSE_COLORS[index % CATEGORY_EXPENSE_COLORS.length],
+    }));
+
+export const toRecentTransactionViews = (
+  transactions: ITransaction[],
+): ITransactionView[] =>
+  [...transactions]
+    .sort(byDescendingDate)
+    .slice(0, RECENT_TRANSACTIONS_COUNT)
+    .map((transaction) => ({
+      id: transaction.id,
+      name: getTransactionName(transaction),
+      time: getTransactionTime(transaction),
+      amount: getTransactionAmount(transaction),
+      icon: VENDOR_CATEGORY_ICONS[getTransactionCategory(transaction)],
+    }));

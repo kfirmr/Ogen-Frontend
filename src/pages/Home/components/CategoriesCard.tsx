@@ -2,7 +2,7 @@ import type { FC } from "react";
 import Card from "../../../components/Card/Card";
 import { useStyles } from "./CategoriesCard.style";
 import BarChart from "../../../components/BarChart/BarChart";
-import type { ICategoryExpense } from "../constants/home.constants";
+import type { ICategoryExpense } from "../../../interfaces/expense.interface";
 
 interface ICategoriesCardProps {
   title: string;

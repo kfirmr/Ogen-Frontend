@@ -3,17 +3,19 @@ import { theme } from "../../../constants/theme.constants";
 
 export const useStyles = () =>
   createStyles({
+    card: {
+      gap: 16,
+      display: "flex",
+      transform: "scale(1.02)",
+      alignItems: "center",
+      flexDirection: "column" as const,
+      boxShadow: theme.shadow.cardTintElevated,
+    },
     header: {
       width: "100%",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
-    },
-    month: {
-      fontSize: 13,
-      fontWeight: 700,
-      color: theme.colors.greenDark,
-      fontFamily: theme.fonts.body,
     },
     total: {
       fontSize: 40,

@@ -3,10 +3,9 @@ import Card from "../../../components/Card/Card";
 import { useStyles } from "./FoundMoneyCard.style";
 import Badge from "../../../components/Badge/Badge";
 import DonutChart from "../../../components/DonutChart/DonutChart";
-import type { IExpenseSegment } from "../constants/home.constants";
+import type { IExpenseSegment } from "../../../interfaces/expense.interface";
 
 interface IFoundMoneyCardProps {
-  month: string;
   badgeText: string;
   totalLabel: string;
   totalAmount: string;
@@ -14,7 +13,6 @@ interface IFoundMoneyCardProps {
 }
 
 const FoundMoneyCard: FC<IFoundMoneyCardProps> = ({
-  month,
   segments,
   badgeText,
   totalLabel,
@@ -23,18 +21,9 @@ const FoundMoneyCard: FC<IFoundMoneyCardProps> = ({
   const styles = useStyles();
 
   return (
-    <Card
-      tone="tint"
-      sx={{
-        gap: 16,
-        display: "flex",
-        alignItems: "center",
-        flexDirection: "column",
-      }}
-    >
+    <Card tone="tint" sx={styles.card}>
       <div style={styles.header}>
         <Badge text={badgeText} />
-        <span style={styles.month}>{month}</span>
       </div>
 
       <DonutChart size={246} segments={segments}>
