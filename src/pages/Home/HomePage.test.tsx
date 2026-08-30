@@ -7,6 +7,7 @@ import {
 import moment from "moment";
 import HomePage from "./HomePage";
 import { MemoryRouter } from "react-router-dom";
+import userEvent from "@testing-library/user-event";
 import { render, screen } from "@testing-library/react";
 import { levelService } from "../../services/level.service";
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -162,7 +163,7 @@ describe("HomePage", () => {
     expect(levelService.getUserProgress).not.toHaveBeenCalled();
   });
 
-  it("charts the fetched subscriptions as monthly expenses", async () => {
+  it("charts the fetched subscriptions as monthly expenses in the overview tab", async () => {
     setSession(SESSION);
 
     renderHomePage();
@@ -171,27 +172,30 @@ describe("HomePage", () => {
     expect(screen.getByText("מצאנו 100 ₪ לחיסכון")).toBeInTheDocument();
     expect(screen.getByText("70 ₪")).toBeInTheDocument();
     expect(screen.getByText("30 ₪")).toBeInTheDocument();
-    expect(screen.getAllByText("Netflix")).toHaveLength(2);
-    expect(screen.getAllByText("Space Gym")).toHaveLength(2);
+    expect(screen.getByText("Netflix")).toBeInTheDocument();
+    expect(screen.getByText("Space Gym")).toBeInTheDocument();
   });
 
-  it("lists the fetched transactions with their day labels", async () => {
+  it("lists the fetched subscriptions after switching to the subs tab", async () => {
     setSession(SESSION);
 
     renderHomePage();
+    await screen.findByText("100 ₪");
 
-    expect(await screen.findByText("מסעדת האחים")).toBeInTheDocument();
-    expect(screen.getByText("היום")).toBeInTheDocument();
-    expect(screen.getByText("אתמול")).toBeInTheDocument();
-    expect(screen.getByText("-320 ₪")).toBeInTheDocument();
-    expect(screen.getByText("-850 ₪")).toBeInTheDocument();
-    expect(screen.getByText("-240 ₪")).toBeInTheDocument();
+    await userEvent.click(screen.getByText("מנויים"));
+
+    expect(await screen.findByText("Netflix")).toBeInTheDocument();
+    expect(screen.getByText("Space Gym")).toBeInTheDocument();
+    expect(screen.getAllByText("ביטול")).toHaveLength(2);
   });
 
-  it("sums the fetched transactions per vendor category", async () => {
+  it("sums the fetched transactions per vendor category after switching to the cats tab", async () => {
     setSession(SESSION);
 
     renderHomePage();
+    await screen.findByText("100 ₪");
+
+    await userEvent.click(screen.getByText("קטגוריות"));
 
     expect(await screen.findByText("דיור")).toBeInTheDocument();
     expect(screen.getByText("תקשורת")).toBeInTheDocument();
@@ -199,5 +203,21 @@ describe("HomePage", () => {
     expect(screen.getByText("850")).toBeInTheDocument();
     expect(screen.getByText("320")).toBeInTheDocument();
     expect(screen.getByText("240")).toBeInTheDocument();
+  });
+
+  it("lists the fetched transactions with their day labels after switching to the tx tab", async () => {
+    setSession(SESSION);
+
+    renderHomePage();
+    await screen.findByText("100 ₪");
+
+    await userEvent.click(screen.getByText("תנועות"));
+
+    expect(await screen.findByText("מסעדת האחים")).toBeInTheDocument();
+    expect(screen.getByText("היום")).toBeInTheDocument();
+    expect(screen.getByText("אתמול")).toBeInTheDocument();
+    expect(screen.getByText("-320 ₪")).toBeInTheDocument();
+    expect(screen.getByText("-850 ₪")).toBeInTheDocument();
+    expect(screen.getByText("-240 ₪")).toBeInTheDocument();
   });
 });

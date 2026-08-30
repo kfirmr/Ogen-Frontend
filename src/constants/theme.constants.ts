@@ -84,6 +84,10 @@ export const theme = {
       disabled: "#C3C8D6",
     },
   },
+  tabBar: {
+    track: "#EFEBDB",
+    inactiveText: "#8D95AC",
+  },
 } as const;
 
 export const TONE_STYLES = {

@@ -18,9 +18,10 @@ import {
   getSubscriptionsSavingsBadge,
 } from "../../utilities/subscription.utility";
 
-import { useState } from "react";
 import { useStyles } from "./HomePage.style";
+import { useState, type ReactNode } from "react";
 import UploadCard from "./components/UploadCard";
+import TabBar from "../../components/TabBar/TabBar";
 import { useCurrentUser } from "../../store/auth.store";
 import CategoriesCard from "./components/CategoriesCard";
 import FoundMoneyCard from "./components/FoundMoneyCard";
@@ -28,7 +29,6 @@ import SaverLevelCard from "./components/SaverLevelCard";
 import AppShell from "../../components/AppShell/AppShell";
 import BottomNav from "../../components/BottomNav/BottomNav";
 import TransactionsCard from "./components/TransactionsCard";
-import { CSV_GUIDE_STEPS } from "./constants/home.constants";
 import { getRecentMonths } from "../../utilities/date.utility";
 import SubscriptionsCard from "./components/SubscriptionsCard";
 import PageHeader from "../../components/PageHeader/PageHeader";
@@ -39,12 +39,14 @@ import { MONTHS_TO_SHOW } from "../../constants/date.constants";
 import { useUserProgress } from "../../hooks/user-progress.hook";
 import { useSubscriptions } from "../../hooks/subscriptions.hook";
 import MonthPicker from "../../components/MonthPicker/MonthPicker";
+import { HOME_TABS, CSV_GUIDE_STEPS } from "./constants/home.constants";
 
 const HomePage = () => {
   const months = getRecentMonths({ count: MONTHS_TO_SHOW });
   const styles = useStyles();
   const user = useCurrentUser();
   const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(HOME_TABS[0].key);
   const [selectedMonthKey, setSelectedMonthKey] = useState(
     months[months.length - 1].key,
   );
@@ -57,6 +59,37 @@ const HomePage = () => {
   const subscriptionViews = toSubscriptionViews(subscriptions);
   const transactionViews = toRecentTransactionViews(transactions);
   const subscriptionSegments = toSubscriptionSegments(subscriptions);
+
+  const tabPanels: Record<string, ReactNode> = {
+    overview: (
+      <FoundMoneyCard
+        totalLabel="סה״כ הוצאות"
+        segments={subscriptionSegments}
+        totalAmount={getSubscriptionsTotal(subscriptions)}
+        badgeText={getSubscriptionsSavingsBadge(subscriptions)}
+      />
+    ),
+    subs: (
+      <SubscriptionsCard
+        title="ניהול מנויים"
+        subscriptions={subscriptionViews}
+        subtitle={getSubscriptionsSubtitle(subscriptionViews.length)}
+      />
+    ),
+    cats: (
+      <CategoriesCard
+        title="הוצאות לפי קטגוריה"
+        categories={categoryExpenses}
+      />
+    ),
+    tx: (
+      <TransactionsCard
+        allText="הכל"
+        title="תנועות אחרונות"
+        transactions={transactionViews}
+      />
+    ),
+  };
 
   const handleGuideConfirm = async () => {};
 
@@ -84,29 +117,9 @@ const HomePage = () => {
           onChange={setSelectedMonthKey}
         />
 
-        <FoundMoneyCard
-          totalLabel="סה״כ הוצאות"
-          segments={subscriptionSegments}
-          totalAmount={getSubscriptionsTotal(subscriptions)}
-          badgeText={getSubscriptionsSavingsBadge(subscriptions)}
-        />
+        <TabBar tabs={HOME_TABS} value={activeTab} onChange={setActiveTab} />
 
-        <SubscriptionsCard
-          title="ניהול מנויים"
-          subscriptions={subscriptionViews}
-          subtitle={getSubscriptionsSubtitle(subscriptionViews.length)}
-        />
-
-        <CategoriesCard
-          title="הוצאות לפי קטגוריה"
-          categories={categoryExpenses}
-        />
-
-        <TransactionsCard
-          allText="הכל"
-          title="תנועות אחרונות"
-          transactions={transactionViews}
-        />
+        {tabPanels[activeTab]}
       </div>
 
       <BottomNav activeTab="home" />
