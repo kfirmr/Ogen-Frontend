@@ -14,6 +14,8 @@ export const AUTH_ROUTES = {
   HOME: "/",
   LOGIN: "/login",
   SIGN_UP: "/signup",
+  INSIGHTS: "/insights",
+  SETTINGS: "/settings",
 } as const;
 
 export const MIN_PASSWORD_LENGTH = 10;

@@ -3,8 +3,8 @@ import type {
   ISignUpRequest,
 } from "../interfaces/auth.interface";
 
-import { setSession } from "../store/auth.store";
 import { authService } from "../services/auth.service";
+import { setSession, clearSession } from "../store/auth.store";
 import { getAuthErrorMessage } from "../utilities/auth-error.utility";
 
 export interface IAuthActionResult {
@@ -25,6 +25,10 @@ export const loginAction = async (
   } catch (error) {
     return { errorMessage: getAuthErrorMessage(error) };
   }
+};
+
+export const logoutAction = (): void => {
+  clearSession();
 };
 
 export const signUpAction = async (

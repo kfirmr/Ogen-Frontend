@@ -43,9 +43,16 @@ export const theme = {
     orangeDark: "#DB7C22",
     orangeLight: "#FFAE5E",
     orangeTint: "#F6D3AC",
+    orangeTintSoft: "#FFF6EC",
+    orangeTintSoftHover: "#FFEFDD",
+    orangeTintShadow: "#F0DCC4",
     gold: "#FFC300",
     goldDark: "#D9A500",
     goldTint: "#FFD968",
+    goldTintSoft: "#FFFBEC",
+    goldTintBorder: "#F5E1A4",
+    goldTintShadow: "#F0E3BE",
+    greenTintShadow: "#D3EEDF",
   },
   button: {
     primary: "#28C76F",
@@ -76,5 +83,23 @@ export const theme = {
       default: "#1D2B4F",
       disabled: "#C3C8D6",
     },
+  },
+} as const;
+
+export const TONE_STYLES = {
+  alert: {
+    background: theme.colors.orangeTintSoft,
+    border: theme.colors.orangeTint,
+    shadow: `0 4px 0 ${theme.colors.orangeTintShadow}`,
+  },
+  win: {
+    background: theme.background.tint,
+    border: theme.colors.greenTintBorder,
+    shadow: `0 4px 0 ${theme.colors.greenTintShadow}`,
+  },
+  streak: {
+    background: theme.colors.goldTintSoft,
+    border: theme.colors.goldTintBorder,
+    shadow: `0 4px 0 ${theme.colors.goldTintShadow}`,
   },
 } as const;

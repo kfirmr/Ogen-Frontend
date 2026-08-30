@@ -20,24 +20,25 @@ import {
 
 import { useState } from "react";
 import { useStyles } from "./HomePage.style";
-import BottomNav from "./components/BottomNav";
-import HomeHeader from "./components/HomeHeader";
 import UploadCard from "./components/UploadCard";
 import { useCurrentUser } from "../../store/auth.store";
 import CategoriesCard from "./components/CategoriesCard";
 import FoundMoneyCard from "./components/FoundMoneyCard";
 import SaverLevelCard from "./components/SaverLevelCard";
 import AppShell from "../../components/AppShell/AppShell";
+import BottomNav from "../../components/BottomNav/BottomNav";
 import TransactionsCard from "./components/TransactionsCard";
+import { CSV_GUIDE_STEPS } from "./constants/home.constants";
 import { getRecentMonths } from "../../utilities/date.utility";
 import SubscriptionsCard from "./components/SubscriptionsCard";
+import PageHeader from "../../components/PageHeader/PageHeader";
 import GuideSteps from "../../components/GuideSteps/GuideSteps";
 import GuideModal from "../../components/GuideModal/GuideModal";
 import { useTransactions } from "../../hooks/transactions.hook";
+import { MONTHS_TO_SHOW } from "../../constants/date.constants";
 import { useUserProgress } from "../../hooks/user-progress.hook";
 import { useSubscriptions } from "../../hooks/subscriptions.hook";
 import MonthPicker from "../../components/MonthPicker/MonthPicker";
-import { MONTHS_TO_SHOW, CSV_GUIDE_STEPS } from "./constants/home.constants";
 
 const HomePage = () => {
   const months = getRecentMonths({ count: MONTHS_TO_SHOW });
@@ -61,7 +62,7 @@ const HomePage = () => {
 
   return (
     <AppShell sx={styles.shell}>
-      <HomeHeader
+      <PageHeader
         name={name}
         avatarInitial={name.charAt(0)}
         level={getLevelHeadline(userProgress)}
@@ -108,7 +109,7 @@ const HomePage = () => {
         />
       </div>
 
-      <BottomNav />
+      <BottomNav activeTab="home" />
 
       <GuideModal
         open={isGuideOpen}

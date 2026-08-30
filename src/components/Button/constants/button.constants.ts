@@ -1,7 +1,13 @@
 import { theme } from "../../../constants/theme.constants";
 
 export type TButtonVariant =
-  "primary" | "secondary" | "warning" | "gold" | "ghost" | "text";
+  | "primary"
+  | "secondary"
+  | "warning"
+  | "warningOutline"
+  | "gold"
+  | "ghost"
+  | "text";
 export type TButtonSize = "medium" | "small";
 export type TMuiVariant = "text" | "outlined" | "contained";
 
@@ -36,6 +42,7 @@ export const MUI_VARIANT_BY_BUTTON_VARIANT: Record<
   primary: "contained",
   warning: "contained",
   secondary: "outlined",
+  warningOutline: "outlined",
 };
 
 export const FLAT_BUTTON_VARIANTS: readonly TButtonVariant[] = [
@@ -77,6 +84,17 @@ export const BUTTON_VARIANT_TOKENS: Record<
     disabledColor: theme.colors.white,
     disabledBackground: theme.colors.orange,
     disabledShadowColor: theme.colors.orangeDark,
+  },
+  warningOutline: {
+    color: theme.colors.orangeDark,
+    background: theme.colors.orangeTintSoft,
+    border: `3px solid ${theme.colors.orangeTint}`,
+    shadowColor: theme.colors.orangeTintShadow,
+    hoverBackground: theme.colors.orangeTintSoftHover,
+    disabledColor: theme.colors.mutedLight,
+    disabledBorder: `3px solid ${theme.border.subtle}`,
+    disabledBackground: theme.colors.orangeTintSoft,
+    disabledShadowColor: theme.colors.orangeTintShadow,
   },
   gold: {
     color: theme.colors.ink,

@@ -1,5 +1,7 @@
 export const TIMEZONE = "Asia/Jerusalem";
 
+export const MONTHS_TO_SHOW = 5;
+
 export const DATE_FORMAT = {
   TIME: "HH:mm",
   DATE: "DD/MM/YYYY",

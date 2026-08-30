@@ -1,15 +1,15 @@
 import type { FC } from "react";
-import { useStyles } from "./HomeHeader.style";
-import Avatar from "../../../components/Avatar/Avatar";
-import anchorIcon from "../../../assets/icons/anchor.png";
+import Avatar from "../Avatar/Avatar";
+import { useStyles } from "./PageHeader.style";
+import anchorIcon from "../../assets/icons/anchor.png";
 
-interface IHomeHeaderProps {
+interface IPageHeaderProps {
   name: string;
   level: string;
   avatarInitial: string;
 }
 
-const HomeHeader: FC<IHomeHeaderProps> = ({ name, level, avatarInitial }) => {
+const PageHeader: FC<IPageHeaderProps> = ({ name, level, avatarInitial }) => {
   const styles = useStyles();
 
   return (
@@ -26,4 +26,4 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ name, level, avatarInitial }) => {
   );
 };
 
-export default HomeHeader;
+export default PageHeader;

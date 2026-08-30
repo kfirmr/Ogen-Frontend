@@ -1,5 +1,5 @@
-import { createStyles } from "../../../create-styles";
-import { theme } from "../../../constants/theme.constants";
+import { createStyles } from "../../create-styles";
+import { theme } from "../../constants/theme.constants";
 
 export const useStyles = () =>
   createStyles({
