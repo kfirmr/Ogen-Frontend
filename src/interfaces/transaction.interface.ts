@@ -21,5 +21,6 @@ export interface ITransactionView {
 export interface IGetTransactionsRequest {
   toDate?: string;
   fromDate?: string;
+  importId?: string;
   batchSize?: number;
 }

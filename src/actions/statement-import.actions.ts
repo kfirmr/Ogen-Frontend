@@ -1,9 +1,9 @@
 import { transactionService } from "../services/transaction.service";
 import { statementImportService } from "../services/statement-import.service";
 import { getLatestTransactionMonthKey } from "../utilities/transaction.utility";
-import { RECENT_TRANSACTIONS_REQUEST } from "../constants/transaction.constants";
 import type { IStatementImport } from "../interfaces/statement-import.interface";
 import { getUploadErrorMessage } from "../utilities/statement-import-error.utility";
+import { IMPORTED_TRANSACTIONS_BATCH_SIZE } from "../constants/transaction.constants";
 
 export interface IUploadStatementActionResult {
   errorMessage: string | null;
@@ -11,13 +11,16 @@ export interface IUploadStatementActionResult {
   latestTransactionMonthKey: string | null;
 }
 
-const getLatestTransactionMonthKeySafely = async (): Promise<string | null> => {
+const getImportedMonthKeySafely = async (
+  importId: string,
+): Promise<string | null> => {
   try {
-    const recentTransactions = await transactionService.getByUser(
-      RECENT_TRANSACTIONS_REQUEST,
-    );
+    const importedTransactions = await transactionService.getByUser({
+      importId,
+      batchSize: IMPORTED_TRANSACTIONS_BATCH_SIZE,
+    });
 
-    return getLatestTransactionMonthKey(recentTransactions.items);
+    return getLatestTransactionMonthKey(importedTransactions.items);
   } catch {
     return null;
   }
@@ -32,7 +35,9 @@ export const uploadStatementAction = async (
     return {
       statementImport,
       errorMessage: null,
-      latestTransactionMonthKey: await getLatestTransactionMonthKeySafely(),
+      latestTransactionMonthKey: await getImportedMonthKeySafely(
+        statementImport.id,
+      ),
     };
   } catch (error) {
     return {
