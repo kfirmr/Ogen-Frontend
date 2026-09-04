@@ -140,3 +140,30 @@ export const toNonSubscriptionSegment = (
     label: TRANSACTION_LABELS.NON_SUBSCRIPTION_EXPENSES,
   };
 };
+
+const byLatestDate = (
+  latest: ITransaction,
+  transaction: ITransaction,
+): ITransaction =>
+  transaction.transactionDate > latest.transactionDate ? transaction : latest;
+
+// Lets the upload flow jump the month picker to wherever the just-imported data actually landed,
+// since a statement's transactions are rarely dated in the current calendar month.
+export const getLatestTransactionMonthKey = (
+  transactions: ITransaction[],
+): string | null => {
+  if (transactions.length === 0) {
+    return null;
+  }
+
+  const [firstTransaction, ...restTransactions] = transactions;
+  const latestTransaction = restTransactions.reduce(
+    byLatestDate,
+    firstTransaction,
+  );
+
+  return formatDate(
+    normalizeDate(latestTransaction.transactionDate),
+    DATE_FORMAT.MONTHS_YEAR,
+  );
+};

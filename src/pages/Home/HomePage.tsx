@@ -104,6 +104,12 @@ const HomePage = () => {
 
   const handleGuideConfirm = async () => {};
 
+  const handleImportedMonth = (monthKey: string) => {
+    if (months.some((month) => month.key === monthKey)) {
+      setSelectedMonthKey(monthKey);
+    }
+  };
+
   return (
     <AppShell sx={styles.shell}>
       <PageHeader
@@ -119,7 +125,10 @@ const HomePage = () => {
         progress={getLevelProgressPercent(userProgress)}
       />
 
-      <UploadCard onOpenGuide={() => setIsGuideOpen(true)} />
+      <UploadCard
+        onImportedMonth={handleImportedMonth}
+        onOpenGuide={() => setIsGuideOpen(true)}
+      />
 
       <div style={styles.monthlyBand}>
         <MonthPicker

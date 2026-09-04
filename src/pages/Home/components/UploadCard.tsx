@@ -15,9 +15,10 @@ import { SUBSCRIPTIONS_QUERY_KEY } from "../../../constants/subscription.constan
 
 interface IUploadCardProps {
   onOpenGuide: () => void;
+  onImportedMonth?: (monthKey: string) => void;
 }
 
-const UploadCard: FC<IUploadCardProps> = ({ onOpenGuide }) => {
+const UploadCard: FC<IUploadCardProps> = ({ onOpenGuide, onImportedMonth }) => {
   const styles = useStyles();
   const queryClient = useQueryClient();
   const [file, setFile] = useState<File | null>(null);
@@ -63,6 +64,10 @@ const UploadCard: FC<IUploadCardProps> = ({ onOpenGuide }) => {
     queryClient.invalidateQueries({ queryKey: TRANSACTIONS_QUERY_KEY });
     queryClient.invalidateQueries({ queryKey: SUBSCRIPTIONS_QUERY_KEY });
     queryClient.invalidateQueries({ queryKey: USER_PROGRESS_QUERY_KEY });
+
+    if (result.latestTransactionMonthKey != null) {
+      onImportedMonth?.(result.latestTransactionMonthKey);
+    }
   };
 
   if (file) {
