@@ -1,9 +1,4 @@
 import {
-  VENDOR_CATEGORY_ICONS,
-  FALLBACK_VENDOR_CATEGORY,
-} from "../constants/vendor.constants";
-
-import {
   SUBSCRIPTION_LABELS,
   BILLING_CYCLE_LABELS,
   MONTHLY_AMOUNT_FACTORS,
@@ -16,6 +11,7 @@ import type {
 } from "../interfaces/subscription.interface";
 
 import { formatMoney } from "./money.utility";
+import { getVendorCategoryIcon } from "./vendor.utility";
 import { DEFAULT_CURRENCY } from "../constants/money.constants";
 import type { IExpenseSegment } from "../interfaces/expense.interface";
 import type { ITransaction } from "../interfaces/transaction.interface";
@@ -30,9 +26,7 @@ const getSubscriptionName = (subscription: ISubscription): string => {
 };
 
 const getSubscriptionIcon = (subscription: ISubscription): string =>
-  VENDOR_CATEGORY_ICONS[
-    subscription.vendor?.category ?? FALLBACK_VENDOR_CATEGORY
-  ];
+  getVendorCategoryIcon(subscription.vendor?.category ?? null);
 
 const getSubscriptionPrice = (subscription: ISubscription): string => {
   const formattedAmount = formatMoney({

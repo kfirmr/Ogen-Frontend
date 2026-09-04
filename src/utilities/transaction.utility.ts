@@ -1,8 +1,7 @@
 import {
-  VENDOR_CATEGORY_ICONS,
-  VENDOR_CATEGORY_LABELS,
-  FALLBACK_VENDOR_CATEGORY,
-} from "../constants/vendor.constants";
+  getVendorCategoryIcon,
+  getVendorCategoryLabel,
+} from "./vendor.utility";
 
 import type {
   IExpenseSegment,
@@ -25,16 +24,14 @@ import type {
 import { formatExpense } from "./money.utility";
 import { DATE_FORMAT } from "../constants/date.constants";
 import { formatDate, getDaysAgo, normalizeDate } from "./date.utility";
-import type { TVendorCategoryType } from "../constants/vendor.constants";
+import { FALLBACK_VENDOR_CATEGORY } from "../constants/vendor.constants";
 
 const DAY_LABELS: Record<number, string> = {
   0: TRANSACTION_LABELS.TODAY,
   1: TRANSACTION_LABELS.YESTERDAY,
 };
 
-const getTransactionCategory = (
-  transaction: ITransaction,
-): TVendorCategoryType =>
+const getTransactionCategory = (transaction: ITransaction): string | null =>
   transaction.vendor?.category ?? FALLBACK_VENDOR_CATEGORY;
 
 const getTransactionName = (transaction: ITransaction): string =>
@@ -69,15 +66,14 @@ const getTransactionValue = (transaction: ITransaction): number => {
   return amount;
 };
 
-const sumByCategory = (
-  transactions: ITransaction[],
-): Map<TVendorCategoryType, number> =>
+const sumByCategory = (transactions: ITransaction[]): Map<string, number> =>
   transactions.reduce((totals, transaction) => {
-    const category = getTransactionCategory(transaction);
+    const category =
+      getTransactionCategory(transaction) ?? FALLBACK_VENDOR_CATEGORY;
     const total = totals.get(category) ?? 0;
 
     return totals.set(category, total + getTransactionValue(transaction));
-  }, new Map<TVendorCategoryType, number>());
+  }, new Map<string, number>());
 
 const byDescendingDate = (first: ITransaction, second: ITransaction): number =>
   second.transactionDate.localeCompare(first.transactionDate);
@@ -90,8 +86,8 @@ export const toCategoryExpenses = (
     .slice(0, TOP_EXPENSE_CATEGORIES_COUNT)
     .map(([category, value], index) => ({
       value: Math.round(value),
-      icon: VENDOR_CATEGORY_ICONS[category],
-      label: VENDOR_CATEGORY_LABELS[category],
+      icon: getVendorCategoryIcon(category),
+      label: getVendorCategoryLabel(category),
       color: CATEGORY_EXPENSE_COLORS[index % CATEGORY_EXPENSE_COLORS.length],
     }));
 
@@ -100,7 +96,7 @@ const toTransactionView = (transaction: ITransaction): ITransactionView => ({
   name: getTransactionName(transaction),
   time: getTransactionTime(transaction),
   amount: getTransactionAmount(transaction),
-  icon: VENDOR_CATEGORY_ICONS[getTransactionCategory(transaction)],
+  icon: getVendorCategoryIcon(getTransactionCategory(transaction)),
 });
 
 export const toTransactionViews = (

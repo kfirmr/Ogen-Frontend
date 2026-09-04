@@ -1,10 +1,7 @@
-import {
-  VENDOR_CATEGORY_ICONS,
-  FALLBACK_VENDOR_CATEGORY,
-} from "../constants/vendor.constants";
-
 import type { ReactNode } from "react";
+import { getVendorCategoryIcon } from "./vendor.utility";
 import type { IInsightRecord } from "../interfaces/insight.interface";
+import { FALLBACK_VENDOR_CATEGORY } from "../constants/vendor.constants";
 
 const renderCategoryIcon = (icon: string): ReactNode => (
   <img alt="" src={icon} style={{ width: "100%", height: "100%" }} />
@@ -16,4 +13,4 @@ const getInsightVendorCategory = (record: IInsightRecord) =>
   FALLBACK_VENDOR_CATEGORY;
 
 export const renderInsightIcon = (record: IInsightRecord): ReactNode =>
-  renderCategoryIcon(VENDOR_CATEGORY_ICONS[getInsightVendorCategory(record)]);
+  renderCategoryIcon(getVendorCategoryIcon(getInsightVendorCategory(record)));

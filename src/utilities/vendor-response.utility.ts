@@ -1,17 +1,8 @@
 import { isRecord } from "./free-text-response.utility";
-import { VENDOR_CATEGORIES } from "../constants/vendor.constants";
 import type { IVendorSummary } from "../interfaces/vendor.interface";
 
-const VENDOR_CATEGORY_VALUES: readonly string[] =
-  Object.values(VENDOR_CATEGORIES);
-
-const isVendorCategory = (value: unknown): boolean => {
-  if (value == null) {
-    return true;
-  }
-
-  return typeof value === "string" && VENDOR_CATEGORY_VALUES.includes(value);
-};
+const isVendorCategory = (value: unknown): boolean =>
+  value == null || typeof value === "string";
 
 export const isVendorSummary = (value: unknown): value is IVendorSummary => {
   if (!isRecord(value)) {
