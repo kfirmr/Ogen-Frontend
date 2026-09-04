@@ -29,6 +29,7 @@ export const useStyles = () =>
     listTitle: {
       margin: 0,
       fontSize: 22,
+      fontWeight: 400,
       color: theme.colors.ink,
       fontFamily: theme.fonts.display,
     },

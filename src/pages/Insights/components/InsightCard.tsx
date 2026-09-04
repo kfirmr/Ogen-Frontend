@@ -17,9 +17,9 @@ const InsightCard: FC<IInsightCardProps> = ({
   const styles = useStyles();
 
   return (
-    <div style={styles.card({ tone: insight.tone })}>
+    <div style={styles.card}>
       <div style={styles.header}>
-        <div style={styles.icon({ icon: insight.icon })} />
+        <div style={styles.icon}>{insight.icon}</div>
         <span style={styles.title}>{insight.title}</span>
       </div>
 

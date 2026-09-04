@@ -4,10 +4,8 @@ import {
   MUI_VARIANT_BY_BUTTON_VARIANT,
 } from "./constants/button.constants";
 
-import { Lottie } from "lottie-react";
 import { useStyles } from "./Button.style";
 import { Button as MuiButton } from "@mui/material";
-import loadingAnimation from "../../lottie/Smartbase-Loading.json";
 import { type CSSProperties, type FC, type MouseEvent } from "react";
 
 interface IButtonProps {
@@ -30,28 +28,15 @@ const Button: FC<IButtonProps> = ({
   variant = "primary",
 }) => {
   const styles = useStyles();
-  const showOverlay = disabled || isLoading;
 
   return (
     <MuiButton
       onClick={onClick}
       disabled={disabled || isLoading}
       variant={MUI_VARIANT_BY_BUTTON_VARIANT[variant]}
-      sx={{
-        ...styles.button({ size, isLoading, showOverlay, variant }),
-        ...sx,
-      }}
+      sx={{ ...styles.button({ size, variant }), ...sx }}
     >
-      {isLoading ? (
-        <>
-          <span style={styles.text}>{text}</span>
-          <div style={styles.loadingAnimation}>
-            <Lottie loop autoplay src={loadingAnimation} />
-          </div>
-        </>
-      ) : (
-        text
-      )}
+      {text}
     </MuiButton>
   );
 };

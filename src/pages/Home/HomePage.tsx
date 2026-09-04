@@ -7,6 +7,7 @@ import {
 
 import {
   toCategoryExpenses,
+  toTransactionViews,
   toRecentTransactionViews,
 } from "../../utilities/transaction.utility";
 
@@ -29,6 +30,7 @@ import SaverLevelCard from "./components/SaverLevelCard";
 import AppShell from "../../components/AppShell/AppShell";
 import BottomNav from "../../components/BottomNav/BottomNav";
 import TransactionsCard from "./components/TransactionsCard";
+import TransactionsPopup from "./components/TransactionsPopup";
 import { getRecentMonths } from "../../utilities/date.utility";
 import SubscriptionsCard from "./components/SubscriptionsCard";
 import PageHeader from "../../components/PageHeader/PageHeader";
@@ -47,17 +49,19 @@ const HomePage = () => {
   const user = useCurrentUser();
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(HOME_TABS[0].key);
+  const [isTransactionsPopupOpen, setIsTransactionsPopupOpen] = useState(false);
   const [selectedMonthKey, setSelectedMonthKey] = useState(
     months[months.length - 1].key,
   );
   const userProgress = useUserProgress();
   const subscriptions = useSubscriptions();
-  const transactions = useTransactions();
+  const transactions = useTransactions(selectedMonthKey);
 
   const name = user?.fullName ?? "";
   const categoryExpenses = toCategoryExpenses(transactions);
   const subscriptionViews = toSubscriptionViews(subscriptions);
   const transactionViews = toRecentTransactionViews(transactions);
+  const allTransactionViews = toTransactionViews(transactions);
   const subscriptionSegments = toSubscriptionSegments(subscriptions);
 
   const tabPanels: Record<string, ReactNode> = {
@@ -87,6 +91,7 @@ const HomePage = () => {
         allText="הכל"
         title="תנועות אחרונות"
         transactions={transactionViews}
+        onShowAll={() => setIsTransactionsPopupOpen(true)}
       />
     ),
   };
@@ -123,6 +128,12 @@ const HomePage = () => {
       </div>
 
       <BottomNav activeTab="home" />
+
+      <TransactionsPopup
+        open={isTransactionsPopupOpen}
+        transactions={allTransactionViews}
+        onClose={() => setIsTransactionsPopupOpen(false)}
+      />
 
       <GuideModal
         open={isGuideOpen}

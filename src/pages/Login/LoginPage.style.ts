@@ -24,6 +24,7 @@ export const useStyles = () =>
       margin: "0 0 8px",
       fontSize: 31,
       lineHeight: 1.25,
+      fontWeight: 400,
       textAlign: "center" as const,
       color: theme.colors.ink,
       fontFamily: theme.fonts.display,

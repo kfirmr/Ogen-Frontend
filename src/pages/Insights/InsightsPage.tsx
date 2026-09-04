@@ -1,5 +1,7 @@
 import {
+  toInsightViews,
   getVisibleInsights,
+  getInsightsForMonth,
   getInsightCountLabel,
 } from "../../utilities/insight.utility";
 
@@ -7,33 +9,54 @@ import { useState } from "react";
 import Card from "../../components/Card/Card";
 import { useStyles } from "./InsightsPage.style";
 import InsightCard from "./components/InsightCard";
+import { useQueryClient } from "@tanstack/react-query";
 import anchorIcon from "../../assets/icons/anchor.png";
 import { useCurrentUser } from "../../store/auth.store";
+import { useInsights } from "../../hooks/insights.hook";
 import AppShell from "../../components/AppShell/AppShell";
 import BottomNav from "../../components/BottomNav/BottomNav";
 import { getRecentMonths } from "../../utilities/date.utility";
-import { MOCK_INSIGHTS } from "./constants/insights.constants";
 import PageHeader from "../../components/PageHeader/PageHeader";
 import { MONTHS_TO_SHOW } from "../../constants/date.constants";
 import { getLevelHeadline } from "../../utilities/level.utility";
 import { useUserProgress } from "../../hooks/user-progress.hook";
 import MonthPicker from "../../components/MonthPicker/MonthPicker";
+import { dismissInsightAction } from "../../actions/insight.actions";
+import { INSIGHTS_QUERY_KEY } from "../../constants/insight.constants";
+import { USER_PROGRESS_QUERY_KEY } from "../../constants/level.constants";
 
 const InsightsPage = () => {
   const months = getRecentMonths({ count: MONTHS_TO_SHOW });
   const styles = useStyles();
+  const queryClient = useQueryClient();
   const user = useCurrentUser();
   const userProgress = useUserProgress();
+  const insightRecords = useInsights();
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
   const [selectedMonthKey, setSelectedMonthKey] = useState(
     months[months.length - 1].key,
   );
 
   const name = user?.fullName ?? "";
-  const visibleInsights = getVisibleInsights(MOCK_INSIGHTS, dismissedIds);
+  const monthlyInsights = getInsightsForMonth(insightRecords, selectedMonthKey);
+  const visibleInsights = getVisibleInsights(
+    toInsightViews(monthlyInsights),
+    dismissedIds,
+  );
 
-  const handleDismiss = (id: string) => {
+  const handleDismiss = async (id: string) => {
     setDismissedIds((current) => current.concat(id));
+
+    try {
+      await dismissInsightAction(id);
+      queryClient.invalidateQueries({ queryKey: INSIGHTS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: USER_PROGRESS_QUERY_KEY });
+    } catch (error) {
+      console.error("Failed to dismiss insight", error);
+      setDismissedIds((current) =>
+        current.filter((dismissedId) => dismissedId !== id),
+      );
+    }
   };
 
   return (

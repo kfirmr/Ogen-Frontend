@@ -1,34 +1,32 @@
 import { createStyles } from "../../../create-styles";
-import { theme, TONE_STYLES } from "../../../constants/theme.constants";
-import type { TInsightTone } from "../../../interfaces/insight.interface";
+import { theme } from "../../../constants/theme.constants";
 
 export const useStyles = () =>
   createStyles({
-    card: ({ tone }: { tone: TInsightTone }) => ({
+    card: {
       gap: 10,
       display: "flex",
       padding: "16px 16px 14px",
       boxSizing: "border-box" as const,
       borderRadius: 26,
       flexDirection: "column" as const,
-      backgroundColor: TONE_STYLES[tone].background,
-      border: `2px solid ${TONE_STYLES[tone].border}`,
-      boxShadow: TONE_STYLES[tone].shadow,
-    }),
+      backgroundColor: theme.background.card,
+      border: `2px solid ${theme.border.subtle}`,
+      boxShadow: theme.shadow.card,
+    },
     header: {
       gap: 12,
       display: "flex",
       alignItems: "center",
     },
-    icon: ({ icon }: { icon: string }) => ({
+    icon: {
       width: 40,
       height: 40,
+      display: "flex",
       flex: "0 0 auto",
-      backgroundImage: `url(${icon})`,
-      backgroundSize: "contain",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-    }),
+      alignItems: "center",
+      justifyContent: "center",
+    },
     title: {
       flex: 1,
       minWidth: 0,
@@ -47,7 +45,7 @@ export const useStyles = () =>
     footer: {
       gap: 10,
       display: "flex",
-      alignItems: "center",
+      alignItems: "flex-end",
       justifyContent: "space-between",
     },
     xp: {

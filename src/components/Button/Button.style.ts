@@ -6,7 +6,6 @@ import {
   BUTTON_VARIANT_TOKENS,
 } from "./constants/button.constants";
 
-import type { CSSProperties } from "react";
 import type { SystemStyleObject } from "@mui/system";
 import { theme } from "../../constants/theme.constants";
 
@@ -14,12 +13,8 @@ export const useStyles = () => ({
   button: ({
     size,
     variant,
-    isLoading,
-    showOverlay,
   }: {
     size: TButtonSize;
-    isLoading: boolean;
-    showOverlay: boolean;
     variant: TButtonVariant;
   }): SystemStyleObject => {
     const tokens = BUTTON_VARIANT_TOKENS[variant];
@@ -36,7 +31,6 @@ export const useStyles = () => ({
       fontSize: sizeTokens.fontSize,
       padding: tokens.padding ?? sizeTokens.padding,
       background: tokens.background,
-      pointerEvents: isLoading ? "none" : "auto",
       border: tokens.border ?? "none",
       boxShadow: isFlat
         ? "none"
@@ -63,27 +57,6 @@ export const useStyles = () => ({
           ? "none"
           : `0 ${sizeTokens.shadowOffset}px 0 ${tokens.disabledShadowColor}`,
       },
-      "&::before": showOverlay
-        ? {
-            content: '""',
-            position: "absolute",
-            inset: 0,
-            backgroundColor: "rgba(255,255,255,0.5)",
-            zIndex: 1,
-          }
-        : {},
     };
   },
-  text: {
-    visibility: "hidden",
-  } as CSSProperties,
-  loadingAnimation: {
-    width: 90,
-    zIndex: 2,
-    height: 90,
-    top: "50%",
-    left: "50%",
-    position: "absolute",
-    transform: "translate(-50%, -50%)",
-  } as CSSProperties,
 });

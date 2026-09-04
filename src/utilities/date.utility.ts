@@ -52,6 +52,26 @@ export const formatDate = (
 export const getDaysAgo = (date: string): number =>
   moment().startOf("day").diff(moment(date).startOf("day"), "days");
 
+export const isDateInMonth = (date: string, monthKey: string): boolean =>
+  moment(date).format(DATE_FORMAT.MONTHS_YEAR) === monthKey;
+
+export interface IMonthDateRange {
+  toDate: string;
+  fromDate: string;
+}
+
+export const getMonthDateRange = (monthKey: string): IMonthDateRange => {
+  const monthStart = moment(monthKey, DATE_FORMAT.MONTHS_YEAR);
+
+  return {
+    fromDate: monthStart
+      .clone()
+      .startOf("month")
+      .format(DATE_FORMAT.DATE_INPUT),
+    toDate: monthStart.clone().endOf("month").format(DATE_FORMAT.DATE_INPUT),
+  };
+};
+
 export const getRecentMonths = ({
   count,
   from = new Date(),

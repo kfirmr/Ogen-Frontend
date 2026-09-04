@@ -7,12 +7,14 @@ import type { ITransactionView } from "../../../interfaces/transaction.interface
 interface ITransactionsCardProps {
   title: string;
   allText: string;
+  onShowAll: () => void;
   transactions: ITransactionView[];
 }
 
 const TransactionsCard: FC<ITransactionsCardProps> = ({
   title,
   allText,
+  onShowAll,
   transactions,
 }) => {
   const styles = useStyles();
@@ -21,7 +23,12 @@ const TransactionsCard: FC<ITransactionsCardProps> = ({
     <Card sx={{ padding: "24px 22px 14px" }}>
       <div style={styles.header}>
         <h3 style={styles.title}>{title}</h3>
-        <Button size="small" text={allText} variant="text" onClick={() => {}} />
+        <Button
+          size="small"
+          text={allText}
+          variant="text"
+          onClick={onShowAll}
+        />
       </div>
 
       {transactions.map((transaction, index) => (

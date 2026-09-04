@@ -33,7 +33,7 @@ const getTransactionCategory = (
   transaction.vendor?.category ?? FALLBACK_VENDOR_CATEGORY;
 
 const getTransactionName = (transaction: ITransaction): string =>
-  transaction.vendor?.name ?? transaction.originalDescription;
+  transaction.originalDescription;
 
 const getTransactionTime = (transaction: ITransaction): string => {
   const dayLabel = DAY_LABELS[getDaysAgo(transaction.transactionDate)];
@@ -90,16 +90,20 @@ export const toCategoryExpenses = (
       color: CATEGORY_EXPENSE_COLORS[index % CATEGORY_EXPENSE_COLORS.length],
     }));
 
+const toTransactionView = (transaction: ITransaction): ITransactionView => ({
+  id: transaction.id,
+  name: getTransactionName(transaction),
+  time: getTransactionTime(transaction),
+  amount: getTransactionAmount(transaction),
+  icon: VENDOR_CATEGORY_ICONS[getTransactionCategory(transaction)],
+});
+
+export const toTransactionViews = (
+  transactions: ITransaction[],
+): ITransactionView[] =>
+  [...transactions].sort(byDescendingDate).map(toTransactionView);
+
 export const toRecentTransactionViews = (
   transactions: ITransaction[],
 ): ITransactionView[] =>
-  [...transactions]
-    .sort(byDescendingDate)
-    .slice(0, RECENT_TRANSACTIONS_COUNT)
-    .map((transaction) => ({
-      id: transaction.id,
-      name: getTransactionName(transaction),
-      time: getTransactionTime(transaction),
-      amount: getTransactionAmount(transaction),
-      icon: VENDOR_CATEGORY_ICONS[getTransactionCategory(transaction)],
-    }));
+  toTransactionViews(transactions).slice(0, RECENT_TRANSACTIONS_COUNT);

@@ -5,18 +5,25 @@ import {
 
 import { useQuery } from "@tanstack/react-query";
 import { useAccessToken } from "../store/auth.store";
+import { getMonthDateRange } from "../utilities/date.utility";
 import { transactionService } from "../services/transaction.service";
 import type { ITransaction } from "../interfaces/transaction.interface";
 
 const EMPTY_TRANSACTIONS: ITransaction[] = [];
 
-export const useTransactions = (): ITransaction[] => {
+export const useTransactions = (monthKey: string): ITransaction[] => {
   const accessToken = useAccessToken();
+  const { fromDate, toDate } = getMonthDateRange(monthKey);
 
   const { data } = useQuery({
-    queryKey: TRANSACTIONS_QUERY_KEY,
     enabled: accessToken !== null,
-    queryFn: () => transactionService.getByUser(RECENT_TRANSACTIONS_REQUEST),
+    queryKey: [...TRANSACTIONS_QUERY_KEY, monthKey],
+    queryFn: () =>
+      transactionService.getByUser({
+        ...RECENT_TRANSACTIONS_REQUEST,
+        fromDate,
+        toDate,
+      }),
   });
 
   return data?.items ?? EMPTY_TRANSACTIONS;

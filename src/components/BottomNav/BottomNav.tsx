@@ -1,11 +1,12 @@
+import {
+  type TNavTab,
+  NAV_TAB_OPTIONS,
+} from "./constants/bottom-nav.constants";
+
 import type { FC } from "react";
 import Button from "../Button/Button";
 import { useStyles } from "./BottomNav.style";
 import { useNavigate } from "react-router-dom";
-import {
-  NAV_TAB_OPTIONS,
-  type TNavTab,
-} from "./constants/bottom-nav.constants";
 
 interface IBottomNavProps {
   activeTab: TNavTab;

@@ -6,6 +6,7 @@ export const useStyles = () =>
     title: {
       margin: "0 0 20px",
       fontSize: 21,
+      fontWeight: 400,
       color: theme.colors.ink,
       fontFamily: theme.fonts.display,
     },

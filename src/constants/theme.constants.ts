@@ -91,7 +91,7 @@ export const theme = {
 } as const;
 
 export const TONE_STYLES = {
-  alert: {
+  warning: {
     background: theme.colors.orangeTintSoft,
     border: theme.colors.orangeTint,
     shadow: `0 4px 0 ${theme.colors.orangeTintShadow}`,

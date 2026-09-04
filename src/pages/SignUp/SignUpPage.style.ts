@@ -23,6 +23,7 @@ export const useStyles = () =>
     heading: {
       margin: "0 0 8px",
       fontSize: 31,
+      fontWeight: 400,
       textAlign: "center" as const,
       color: theme.colors.ink,
       fontFamily: theme.fonts.display,

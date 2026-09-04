@@ -113,6 +113,19 @@ export const useStyles = () =>
       width: "100%",
       padding: "15px 24px",
     },
+    errorMessage: {
+      fontSize: 13,
+      textAlign: "center" as const,
+      color: theme.colors.error,
+      fontFamily: theme.fonts.body,
+    },
+    successMessage: {
+      fontSize: 15,
+      lineHeight: 1.5,
+      textAlign: "center" as const,
+      color: theme.colors.greenDark,
+      fontFamily: theme.fonts.body,
+    },
     privacyNote: {
       gap: 6,
       display: "flex",
