@@ -8,12 +8,13 @@ import {
 import {
   toCategoryExpenses,
   toTransactionViews,
+  toNonSubscriptionSegment,
   toRecentTransactionViews,
 } from "../../utilities/transaction.utility";
 
 import {
+  getTotalExpenses,
   toSubscriptionViews,
-  getSubscriptionsTotal,
   toSubscriptionSegments,
   getSubscriptionsSubtitle,
   getSubscriptionsSavingsBadge,
@@ -62,15 +63,20 @@ const HomePage = () => {
   const subscriptionViews = toSubscriptionViews(subscriptions);
   const transactionViews = toRecentTransactionViews(transactions);
   const allTransactionViews = toTransactionViews(transactions);
+  const nonSubscriptionSegment = toNonSubscriptionSegment(transactions);
   const subscriptionSegments = toSubscriptionSegments(subscriptions);
+  const foundMoneySegments =
+    nonSubscriptionSegment == null
+      ? subscriptionSegments
+      : [...subscriptionSegments, nonSubscriptionSegment];
 
   const tabPanels: Record<string, ReactNode> = {
     overview: (
       <FoundMoneyCard
         totalLabel="סה״כ הוצאות"
-        segments={subscriptionSegments}
-        totalAmount={getSubscriptionsTotal(subscriptions)}
+        segments={foundMoneySegments}
         badgeText={getSubscriptionsSavingsBadge(subscriptions)}
+        totalAmount={getTotalExpenses(subscriptions, transactions)}
       />
     ),
     subs: (

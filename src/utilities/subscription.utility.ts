@@ -18,6 +18,8 @@ import type {
 import { formatMoney } from "./money.utility";
 import { DEFAULT_CURRENCY } from "../constants/money.constants";
 import type { IExpenseSegment } from "../interfaces/expense.interface";
+import type { ITransaction } from "../interfaces/transaction.interface";
+import { getNonSubscriptionExpensesTotal } from "./transaction.utility";
 
 const getSubscriptionName = (subscription: ISubscription): string => {
   if (subscription.vendor == null) {
@@ -58,6 +60,12 @@ const getMonthlyAmount = (subscription: ISubscription): number => {
 const getSegmentColor = (index: number): string =>
   SUBSCRIPTION_SEGMENT_COLORS[index % SUBSCRIPTION_SEGMENT_COLORS.length];
 
+const getSubscriptionsMonthlySum = (subscriptions: ISubscription[]): number =>
+  subscriptions.reduce(
+    (sum, subscription) => sum + getMonthlyAmount(subscription),
+    0,
+  );
+
 export const toSubscriptionViews = (
   subscriptions: ISubscription[],
 ): ISubscriptionView[] =>
@@ -80,12 +88,24 @@ export const toSubscriptionSegments = (
 export const getSubscriptionsTotal = (
   subscriptions: ISubscription[],
 ): string => {
-  const total = subscriptions.reduce(
-    (sum, subscription) => sum + getMonthlyAmount(subscription),
-    0,
-  );
-
+  const total = getSubscriptionsMonthlySum(subscriptions);
   const currency = subscriptions[0]?.currency ?? DEFAULT_CURRENCY;
+
+  return (
+    formatMoney({ currency, amount: String(total) }) ??
+    SUBSCRIPTION_LABELS.UNKNOWN_PRICE
+  );
+};
+
+export const getTotalExpenses = (
+  subscriptions: ISubscription[],
+  transactions: ITransaction[],
+): string => {
+  const total =
+    getSubscriptionsMonthlySum(subscriptions) +
+    getNonSubscriptionExpensesTotal(transactions);
+  const currency =
+    subscriptions[0]?.currency ?? transactions[0]?.currency ?? DEFAULT_CURRENCY;
 
   return (
     formatMoney({ currency, amount: String(total) }) ??

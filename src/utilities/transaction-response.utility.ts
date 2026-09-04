@@ -14,11 +14,14 @@ const isTransaction = (value: unknown): value is ITransaction => {
   const hasMoneyShape =
     typeof value.amount === "string" && typeof value.currency === "string";
   const hasDate = typeof value.transactionDate === "string";
+  const hasValidSubscriptionId =
+    value.subscriptionId == null || typeof value.subscriptionId === "string";
 
   return (
     hasIdentity &&
     hasMoneyShape &&
     hasDate &&
+    hasValidSubscriptionId &&
     (value.vendor == null || isVendorSummary(value.vendor))
   );
 };

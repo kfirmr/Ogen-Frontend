@@ -6,6 +6,7 @@ export interface ITransaction {
   currency: string;
   transactionDate: string;
   originalDescription: string;
+  subscriptionId: string | null;
   vendor: IVendorSummary | null;
 }
 

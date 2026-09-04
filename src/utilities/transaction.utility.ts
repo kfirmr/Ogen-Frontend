@@ -4,11 +4,17 @@ import {
   FALLBACK_VENDOR_CATEGORY,
 } from "../constants/vendor.constants";
 
+import type {
+  IExpenseSegment,
+  ICategoryExpense,
+} from "../interfaces/expense.interface";
+
 import {
   TRANSACTION_LABELS,
   CATEGORY_EXPENSE_COLORS,
   RECENT_TRANSACTIONS_COUNT,
   TOP_EXPENSE_CATEGORIES_COUNT,
+  NON_SUBSCRIPTION_SEGMENT_COLOR,
 } from "../constants/transaction.constants";
 
 import type {
@@ -19,7 +25,6 @@ import type {
 import { formatExpense } from "./money.utility";
 import { DATE_FORMAT } from "../constants/date.constants";
 import { formatDate, getDaysAgo, normalizeDate } from "./date.utility";
-import type { ICategoryExpense } from "../interfaces/expense.interface";
 import type { TVendorCategoryType } from "../constants/vendor.constants";
 
 const DAY_LABELS: Record<number, string> = {
@@ -107,3 +112,31 @@ export const toRecentTransactionViews = (
   transactions: ITransaction[],
 ): ITransactionView[] =>
   toTransactionViews(transactions).slice(0, RECENT_TRANSACTIONS_COUNT);
+
+const isNonSubscriptionTransaction = (transaction: ITransaction): boolean =>
+  transaction.subscriptionId == null;
+
+export const getNonSubscriptionExpensesTotal = (
+  transactions: ITransaction[],
+): number =>
+  Math.round(
+    transactions
+      .filter(isNonSubscriptionTransaction)
+      .reduce((sum, transaction) => sum + getTransactionValue(transaction), 0),
+  );
+
+export const toNonSubscriptionSegment = (
+  transactions: ITransaction[],
+): IExpenseSegment | null => {
+  const value = getNonSubscriptionExpensesTotal(transactions);
+
+  if (value <= 0) {
+    return null;
+  }
+
+  return {
+    value,
+    color: NON_SUBSCRIPTION_SEGMENT_COLOR,
+    label: TRANSACTION_LABELS.NON_SUBSCRIPTION_EXPENSES,
+  };
+};

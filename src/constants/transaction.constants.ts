@@ -12,7 +12,10 @@ export const TRANSACTION_LABELS = {
   TODAY: "היום",
   YESTERDAY: "אתמול",
   UNKNOWN_AMOUNT: "לא ידוע",
+  NON_SUBSCRIPTION_EXPENSES: "שאר ההוצאות",
 } as const;
+
+export const NON_SUBSCRIPTION_SEGMENT_COLOR: string = theme.colors.mutedLight;
 
 export const CATEGORY_EXPENSE_COLORS: string[] = [
   theme.colors.green,

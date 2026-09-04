@@ -76,6 +76,7 @@ const TRANSACTIONS = {
       amount: "320.00",
       currency: "ILS",
       vendor: null,
+      subscriptionId: null,
       originalDescription: "מסעדת האחים",
       transactionDate: moment().format(DATE_FORMAT),
     },
@@ -83,6 +84,7 @@ const TRANSACTIONS = {
       id: "d1f0c0de-0000-4000-8000-000000000002",
       amount: "850.00",
       currency: "ILS",
+      subscriptionId: null,
       originalDescription: "CHEVRAT HASHMAL",
       transactionDate: moment().subtract(1, "day").format(DATE_FORMAT),
       vendor: {
@@ -95,6 +97,7 @@ const TRANSACTIONS = {
       id: "d1f0c0de-0000-4000-8000-000000000003",
       amount: "240.00",
       currency: "ILS",
+      subscriptionId: null,
       originalDescription: "CELLCOM",
       transactionDate: moment().subtract(4, "days").format(DATE_FORMAT),
       vendor: {
@@ -168,19 +171,21 @@ describe("HomePage", () => {
 
     renderHomePage();
 
-    expect(await screen.findByText("100 ₪")).toBeInTheDocument();
+    expect(await screen.findByText("1,510 ₪")).toBeInTheDocument();
     expect(screen.getByText("מצאנו 100 ₪ לחיסכון")).toBeInTheDocument();
     expect(screen.getByText("70 ₪")).toBeInTheDocument();
     expect(screen.getByText("30 ₪")).toBeInTheDocument();
     expect(screen.getByText("Netflix")).toBeInTheDocument();
     expect(screen.getByText("Space Gym")).toBeInTheDocument();
+    expect(screen.getByText("שאר ההוצאות")).toBeInTheDocument();
+    expect(screen.getByText("1,410 ₪")).toBeInTheDocument();
   });
 
   it("lists the fetched subscriptions after switching to the subs tab", async () => {
     setSession(SESSION);
 
     renderHomePage();
-    await screen.findByText("100 ₪");
+    await screen.findByText("1,510 ₪");
 
     await userEvent.click(screen.getByText("מנויים"));
 
@@ -193,7 +198,7 @@ describe("HomePage", () => {
     setSession(SESSION);
 
     renderHomePage();
-    await screen.findByText("100 ₪");
+    await screen.findByText("1,510 ₪");
 
     await userEvent.click(screen.getByText("קטגוריות"));
 
@@ -209,7 +214,7 @@ describe("HomePage", () => {
     setSession(SESSION);
 
     renderHomePage();
-    await screen.findByText("100 ₪");
+    await screen.findByText("1,510 ₪");
 
     await userEvent.click(screen.getByText("תנועות"));
 
