@@ -32,3 +32,8 @@ export const INSIGHT_TYPE_TONES: Record<TInsightType, TInsightTone> = {
   [INSIGHT_TYPES.OVERPAYING]: "warning",
   [INSIGHT_TYPES.HIGH_SPENDING]: "warning",
 };
+
+export const INSIGHT_LABELS = {
+  SAVINGS_SUFFIX: "בחודש",
+  SAVINGS_PREFIX: "אפשר לחסוך",
+} as const;

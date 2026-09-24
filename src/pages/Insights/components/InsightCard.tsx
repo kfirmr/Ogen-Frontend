@@ -25,6 +25,10 @@ const InsightCard: FC<IInsightCardProps> = ({
 
       <p style={styles.body}>{insight.body}</p>
 
+      {insight.savingsLabel != null && (
+        <span style={styles.savings}>{insight.savingsLabel}</span>
+      )}
+
       <div style={styles.footer}>
         <Button
           size="small"

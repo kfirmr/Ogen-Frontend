@@ -8,10 +8,13 @@ import uploadIcon from "../../../assets/icons/upload.png";
 import fileCsvIcon from "../../../assets/icons/file_csv.png";
 import { formatFileSize } from "../../../utilities/file.utility";
 import { useRef, useState, type FC, type ChangeEvent } from "react";
+import { INSIGHTS_QUERY_KEY } from "../../../constants/insight.constants";
 import { USER_PROGRESS_QUERY_KEY } from "../../../constants/level.constants";
 import { uploadStatementAction } from "../../../actions/statement-import.actions";
 import { TRANSACTIONS_QUERY_KEY } from "../../../constants/transaction.constants";
 import { SUBSCRIPTIONS_QUERY_KEY } from "../../../constants/subscription.constants";
+import { getImportStatusMessage } from "../../../utilities/statement-import.utility";
+import type { IStatementImport } from "../../../interfaces/statement-import.interface";
 
 interface IUploadCardProps {
   onOpenGuide: () => void;
@@ -24,7 +27,9 @@ const UploadCard: FC<IUploadCardProps> = ({ onOpenGuide, onImportedMonth }) => {
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  const [importedCount, setImportedCount] = useState<number | null>(null);
+  const [finishedImport, setFinishedImport] = useState<IStatementImport | null>(
+    null,
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleChooseFile = () => {
@@ -34,13 +39,13 @@ const UploadCard: FC<IUploadCardProps> = ({ onOpenGuide, onImportedMonth }) => {
   const handleFileSelected = (event: ChangeEvent<HTMLInputElement>) => {
     setFile(event.target.files?.[0] ?? null);
     setUploadError(null);
-    setImportedCount(null);
+    setFinishedImport(null);
   };
 
   const handleClearFile = () => {
     setFile(null);
     setUploadError(null);
-    setImportedCount(null);
+    setFinishedImport(null);
   };
 
   const handleUpload = async () => {
@@ -60,7 +65,8 @@ const UploadCard: FC<IUploadCardProps> = ({ onOpenGuide, onImportedMonth }) => {
       return;
     }
 
-    setImportedCount(result.statementImport?.transactionCount ?? 0);
+    setFinishedImport(result.statementImport);
+    queryClient.invalidateQueries({ queryKey: INSIGHTS_QUERY_KEY });
     queryClient.invalidateQueries({ queryKey: TRANSACTIONS_QUERY_KEY });
     queryClient.invalidateQueries({ queryKey: SUBSCRIPTIONS_QUERY_KEY });
     queryClient.invalidateQueries({ queryKey: USER_PROGRESS_QUERY_KEY });
@@ -90,9 +96,9 @@ const UploadCard: FC<IUploadCardProps> = ({ onOpenGuide, onImportedMonth }) => {
           </IconButton>
         </div>
 
-        {importedCount != null ? (
+        {finishedImport != null ? (
           <span style={styles.successMessage}>
-            הקובץ נסרק בהצלחה, יובאו {importedCount} תנועות חדשות
+            {getImportStatusMessage(finishedImport)}
           </span>
         ) : (
           <Button

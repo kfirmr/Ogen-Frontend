@@ -32,6 +32,20 @@ export const setSession = (session: IAuthSession) => {
   });
 };
 
+export const setAccessToken = (accessToken: string) => {
+  const user = getCurrentUser();
+
+  if (user === null) {
+    return;
+  }
+
+  WebLocalStorageManager.setJson(LOCAL_STORAGE_KEYS.AUTH_SESSION, {
+    user,
+    accessToken,
+  });
+  useAuthStore.setState({ accessToken });
+};
+
 export const clearSession = () => {
   WebLocalStorageManager.removeItem(LOCAL_STORAGE_KEYS.AUTH_SESSION);
   useAuthStore.setState({ user: null, accessToken: null });

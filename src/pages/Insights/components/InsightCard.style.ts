@@ -42,6 +42,17 @@ export const useStyles = () =>
       color: theme.colors.muted,
       fontFamily: theme.fonts.body,
     },
+    savings: {
+      fontSize: 13,
+      fontWeight: 800,
+      borderRadius: 12,
+      padding: "6px 10px",
+      alignSelf: "flex-start",
+      color: theme.colors.greenDarker,
+      fontFamily: theme.fonts.body,
+      backgroundColor: theme.colors.greenTint,
+      border: `1px solid ${theme.colors.greenTintBorder}`,
+    },
     footer: {
       gap: 10,
       display: "flex",

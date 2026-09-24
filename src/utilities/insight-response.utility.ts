@@ -11,6 +11,20 @@ const INSIGHT_TYPE_VALUES: readonly string[] = Object.values(INSIGHT_TYPES);
 const INSIGHT_STATUS_VALUES: readonly string[] =
   Object.values(INSIGHT_STATUSES);
 
+const hasValidMetadata = (value: Record<string, unknown>): boolean =>
+  !("metadata" in value) || isRecord(value.metadata);
+
+const hasValidEstimatedSavings = (value: Record<string, unknown>): boolean => {
+  if (!("estimatedMonthlySavings" in value)) {
+    return true;
+  }
+
+  return (
+    value.estimatedMonthlySavings === null ||
+    typeof value.estimatedMonthlySavings === "string"
+  );
+};
+
 const isInsightRecord = (value: unknown): value is IInsightRecord => {
   if (!isRecord(value)) {
     return false;
@@ -20,6 +34,8 @@ const isInsightRecord = (value: unknown): value is IInsightRecord => {
     typeof value.id === "string" &&
     typeof value.body === "string" &&
     typeof value.createdAt === "string" &&
+    hasValidMetadata(value) &&
+    hasValidEstimatedSavings(value) &&
     INSIGHT_TYPE_VALUES.includes(String(value.type)) &&
     INSIGHT_STATUS_VALUES.includes(String(value.status))
   );

@@ -5,12 +5,8 @@ import type {
 } from "../interfaces/auth.interface";
 
 import { apiClient } from "./api-client";
+import { AUTH_ENDPOINTS } from "../constants/auth.constants";
 import { isAuthSession } from "../utilities/auth-response.utility";
-
-const AUTH_ENDPOINTS = {
-  LOGIN: "/auth/login",
-  SIGN_UP: "/auth/sign-up",
-} as const;
 
 const toAuthSession = (data: unknown): IAuthSession => {
   if (!isAuthSession(data)) {

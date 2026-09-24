@@ -10,6 +10,12 @@ export const AUTH_MESSAGES = {
   GENERIC_FAILURE: "משהו השתבש, נסו שוב",
 } as const;
 
+export const AUTH_ENDPOINTS = {
+  LOGIN: "/auth/login",
+  REFRESH: "/auth/refresh",
+  SIGN_UP: "/auth/sign-up",
+} as const;
+
 export const AUTH_ROUTES = {
   HOME: "/",
   LOGIN: "/login",
