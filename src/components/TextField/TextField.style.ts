@@ -3,10 +3,19 @@ import { theme } from "../../constants/theme.constants";
 
 interface IStylesParams {
   disabled: boolean;
+  multiline: boolean;
   helperTextColor: string;
 }
 
-export const useStyles = ({ disabled, helperTextColor }: IStylesParams) =>
+const getFieldBackground = ({ disabled, multiline }: IStylesParams) => {
+  if (disabled) {
+    return theme.background.fill;
+  }
+
+  return multiline ? theme.background.inputFill : theme.colors.white;
+};
+
+export const useStyles = (params: IStylesParams) =>
   createStyles({
     textField: {
       "& .MuiOutlinedInput-root": {
@@ -15,9 +24,11 @@ export const useStyles = ({ disabled, helperTextColor }: IStylesParams) =>
         boxSizing: "border-box",
         paddingInlineEnd: "18px",
         paddingInlineStart: "8px",
-        borderRadius: theme.radius.pill,
         border: `3px solid ${theme.border.faint}`,
-        backgroundColor: disabled ? theme.background.fill : theme.colors.white,
+        backgroundColor: getFieldBackground(params),
+        borderRadius: params.multiline
+          ? theme.radius.multilineInput
+          : theme.radius.pill,
 
         "& .MuiOutlinedInput-notchedOutline": {
           border: "none",
@@ -39,9 +50,17 @@ export const useStyles = ({ disabled, helperTextColor }: IStylesParams) =>
           fontWeight: 400,
           lineHeight: "normal",
           fontFamily: theme.fonts.body,
-          color: disabled
+          color: params.disabled
             ? theme.text.textfield.disabled
             : theme.text.textfield.default,
+        },
+
+        "& textarea": {
+          fontSize: 14.5,
+          lineHeight: 1.6,
+          padding: "10px 8px",
+          fontFamily: theme.fonts.body,
+          color: theme.text.textfield.default,
         },
 
         "& input::placeholder": {
@@ -54,7 +73,7 @@ export const useStyles = ({ disabled, helperTextColor }: IStylesParams) =>
         },
       },
       "& .MuiFormHelperText-root": {
-        color: helperTextColor,
+        color: params.helperTextColor,
         fontSize: 13,
         fontWeight: 600,
         fontStyle: "normal",

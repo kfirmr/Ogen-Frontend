@@ -9,6 +9,8 @@ import { toSubscriptionBatch } from "../utilities/subscription-response.utility"
 
 const SUBSCRIPTION_ENDPOINTS = {
   SEARCH: "/subscription/search",
+  REQUEST_CANCELLATION: (id: string) =>
+    `/subscription/${id}/request-cancellation`,
 } as const;
 
 class SubscriptionService {
@@ -21,6 +23,15 @@ class SubscriptionService {
     );
 
     return toSubscriptionBatch(response.data);
+  }
+
+  async requestCancellation(
+    id: string,
+    cancellationEmail: string | null,
+  ): Promise<void> {
+    await apiClient.post(SUBSCRIPTION_ENDPOINTS.REQUEST_CANCELLATION(id), {
+      cancellationEmail,
+    });
   }
 }
 

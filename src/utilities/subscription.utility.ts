@@ -1,4 +1,5 @@
 import {
+  MONTHS_PER_YEAR,
   SUBSCRIPTION_LABELS,
   BILLING_CYCLE_LABELS,
   MONTHLY_AMOUNT_FACTORS,
@@ -60,15 +61,34 @@ const getSubscriptionsMonthlySum = (subscriptions: ISubscription[]): number =>
     0,
   );
 
+export const toSubscriptionView = (
+  subscription: ISubscription,
+): ISubscriptionView => ({
+  id: subscription.id,
+  icon: getSubscriptionIcon(subscription),
+  name: getSubscriptionName(subscription),
+  price: getSubscriptionPrice(subscription),
+});
+
 export const toSubscriptionViews = (
   subscriptions: ISubscription[],
-): ISubscriptionView[] =>
-  subscriptions.map((subscription) => ({
-    id: subscription.id,
-    icon: getSubscriptionIcon(subscription),
-    name: getSubscriptionName(subscription),
-    price: getSubscriptionPrice(subscription),
-  }));
+): ISubscriptionView[] => subscriptions.map(toSubscriptionView);
+
+export const getSubscriptionYearlyCostLabel = (
+  subscription: ISubscription,
+): string => {
+  const yearlyAmount = getMonthlyAmount(subscription) * MONTHS_PER_YEAR;
+  const formattedAmount = formatMoney({
+    amount: String(yearlyAmount),
+    currency: subscription.currency,
+  });
+
+  if (formattedAmount === null) {
+    return SUBSCRIPTION_LABELS.UNKNOWN_PRICE;
+  }
+
+  return `${formattedAmount} ${SUBSCRIPTION_LABELS.PER_YEAR}`;
+};
 
 export const toSubscriptionSegments = (
   subscriptions: ISubscription[],

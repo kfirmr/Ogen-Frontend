@@ -36,7 +36,8 @@ const isSubscription = (value: unknown): value is ISubscription => {
     BILLING_CYCLE_VALUES.includes(String(value.billingCycle));
   const hasLifecycle =
     SUBSCRIPTION_STATUS_VALUES.includes(String(value.status)) &&
-    isNullableString(value.nextChargeDate);
+    isNullableString(value.nextChargeDate) &&
+    isNullableString(value.cancellationEmail);
 
   return (
     hasIdentity &&

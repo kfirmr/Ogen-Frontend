@@ -59,6 +59,11 @@ export const useStyles = () =>
       alignItems: "flex-end",
       justifyContent: "space-between",
     },
+    actions: {
+      gap: 8,
+      display: "flex",
+      flexWrap: "wrap" as const,
+    },
     xp: {
       flex: "0 0 auto",
       fontSize: 12,

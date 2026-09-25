@@ -3,16 +3,20 @@ import Button from "../Button/Button";
 import type { FC, ReactNode } from "react";
 import { useStyles } from "./GuideModal.style";
 import { Dialog, IconButton } from "@mui/material";
+import type { TButtonVariant } from "../Button/constants/button.constants";
 
 interface IGuideModalAction {
   text: string;
+  disabled?: boolean;
+  isLoading?: boolean;
+  variant?: TButtonVariant;
   onClick: () => void | Promise<void>;
 }
 
 interface IGuideModalProps {
   open: boolean;
   title: string;
-  eyebrow: string;
+  eyebrow?: string;
   subtitle: string;
   children: ReactNode;
   onClose: () => void;
@@ -36,7 +40,7 @@ const GuideModal: FC<IGuideModalProps> = ({
     <Dialog open={open} sx={styles.root} onClose={onClose}>
       <div style={styles.header}>
         <div style={styles.text}>
-          <Badge text={eyebrow} />
+          {eyebrow != null && <Badge text={eyebrow} />}
           <span style={styles.title}>{title}</span>
           <span style={styles.subtitle}>{subtitle}</span>
         </div>
@@ -52,6 +56,9 @@ const GuideModal: FC<IGuideModalProps> = ({
           text={primaryButton.text}
           sx={styles.primaryButton}
           onClick={primaryButton.onClick}
+          variant={primaryButton.variant}
+          disabled={primaryButton.disabled}
+          isLoading={primaryButton.isLoading}
         />
         {secondaryButton && (
           <Button

@@ -13,6 +13,7 @@ export interface ISubscription {
   nextChargeDate: string | null;
   status: TSubscriptionStatusType;
   billingCycle: TBillingCycleType;
+  cancellationEmail?: string | null;
 }
 
 export interface ISubscriptionView {

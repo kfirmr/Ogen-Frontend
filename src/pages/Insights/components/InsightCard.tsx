@@ -6,11 +6,15 @@ import type { IInsight } from "../../../interfaces/insight.interface";
 interface IInsightCardProps {
   insight: IInsight;
   dismissText: string;
+  reviewText?: string;
+  onReview?: (() => void) | null;
   onDismiss: (id: string) => void;
 }
 
 const InsightCard: FC<IInsightCardProps> = ({
   insight,
+  onReview,
+  reviewText,
   dismissText,
   onDismiss,
 }) => {
@@ -30,12 +34,17 @@ const InsightCard: FC<IInsightCardProps> = ({
       )}
 
       <div style={styles.footer}>
-        <Button
-          size="small"
-          text={dismissText}
-          variant="secondary"
-          onClick={() => onDismiss(insight.id)}
-        />
+        <div style={styles.actions}>
+          {onReview != null && reviewText != null && (
+            <Button size="small" text={reviewText} onClick={onReview} />
+          )}
+          <Button
+            size="small"
+            text={dismissText}
+            variant="secondary"
+            onClick={() => onDismiss(insight.id)}
+          />
+        </div>
         <span style={styles.xp}>{insight.xpLabel}</span>
       </div>
     </div>
