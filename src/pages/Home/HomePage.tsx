@@ -43,6 +43,8 @@ import { useUserProgress } from "../../hooks/user-progress.hook";
 import { useSubscriptions } from "../../hooks/subscriptions.hook";
 import MonthPicker from "../../components/MonthPicker/MonthPicker";
 import { HOME_TABS, CSV_GUIDE_STEPS } from "./constants/home.constants";
+import { useSubscriptionCancellation } from "../../hooks/subscription-cancellation.hook";
+import CancelSubscriptionPopup from "../../components/CancelSubscriptionPopup/CancelSubscriptionPopup";
 
 const HomePage = () => {
   const months = getRecentMonths({ count: MONTHS_TO_SHOW });
@@ -57,6 +59,7 @@ const HomePage = () => {
   const userProgress = useUserProgress();
   const subscriptions = useSubscriptions();
   const transactions = useTransactions(selectedMonthKey);
+  const cancellation = useSubscriptionCancellation();
 
   const name = user?.fullName ?? "";
   const categoryExpenses = toCategoryExpenses(transactions);
@@ -82,7 +85,9 @@ const HomePage = () => {
     subs: (
       <SubscriptionsCard
         title="ניהול מנויים"
+        onCancel={cancellation.open}
         subscriptions={subscriptionViews}
+        loadingId={cancellation.openingSubscriptionId}
         subtitle={getSubscriptionsSubtitle(subscriptionViews.length)}
       />
     ),
@@ -143,6 +148,15 @@ const HomePage = () => {
       </div>
 
       <BottomNav activeTab="home" />
+
+      {cancellation.request !== null && (
+        <CancelSubscriptionPopup
+          onSend={cancellation.send}
+          onClose={cancellation.close}
+          request={cancellation.request}
+          key={cancellation.request.subscription.id}
+        />
+      )}
 
       <TransactionsPopup
         open={isTransactionsPopupOpen}

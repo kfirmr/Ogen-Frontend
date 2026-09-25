@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
-import { theme } from "../../../constants/theme.constants";
+import { theme, TONE_STYLES } from "../../../constants/theme.constants";
 
-export type TCardTone = "default" | "tint" | "success";
+export type TCardTone = "default" | "tint" | "success" | "warning";
 
 export const CARD_TONE_STYLES: Record<TCardTone, CSSProperties> = {
   default: {
@@ -18,5 +18,10 @@ export const CARD_TONE_STYLES: Record<TCardTone, CSSProperties> = {
     backgroundColor: theme.background.card,
     border: `2px solid ${theme.colors.green}`,
     boxShadow: `0 4px 0 ${theme.colors.greenTintBorder}`,
+  },
+  warning: {
+    boxShadow: "none",
+    backgroundColor: TONE_STYLES.warning.background,
+    border: `2px solid ${TONE_STYLES.warning.border}`,
   },
 };

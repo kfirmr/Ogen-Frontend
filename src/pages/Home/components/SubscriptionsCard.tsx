@@ -1,18 +1,22 @@
 import type { FC } from "react";
-import Card from "../../../components/Card/Card";
 import { useStyles } from "./SubscriptionsCard.style";
 import Button from "../../../components/Button/Button";
+import IconListItem from "../../../components/IconListItem/IconListItem";
 import type { ISubscriptionView } from "../../../interfaces/subscription.interface";
 
 interface ISubscriptionsCardProps {
   title: string;
   subtitle: string;
+  loadingId: string | null;
+  onCancel: (id: string) => void;
   subscriptions: ISubscriptionView[];
 }
 
 const SubscriptionsCard: FC<ISubscriptionsCardProps> = ({
   title,
   subtitle,
+  onCancel,
+  loadingId,
   subscriptions,
 }) => {
   const styles = useStyles();
@@ -26,27 +30,21 @@ const SubscriptionsCard: FC<ISubscriptionsCardProps> = ({
 
       <div style={styles.list}>
         {subscriptions.map((subscription) => (
-          <Card
+          <IconListItem
             key={subscription.id}
-            sx={{
-              gap: 12,
-              display: "flex",
-              alignItems: "center",
-              padding: "14px 16px",
-            }}
-          >
-            <img alt="" style={styles.icon} src={subscription.icon} />
-            <div style={styles.text}>
-              <span style={styles.name}>{subscription.name}</span>
-              <span style={styles.price}>{subscription.price}</span>
-            </div>
-            <Button
-              text="ביטול"
-              size="small"
-              variant="warning"
-              onClick={() => {}}
-            />
-          </Card>
+            icon={subscription.icon}
+            title={subscription.name}
+            subtitle={subscription.price}
+            trailing={
+              <Button
+                text="ביטול"
+                size="small"
+                variant="warning"
+                isLoading={subscription.id === loadingId}
+                onClick={() => onCancel(subscription.id)}
+              />
+            }
+          />
         ))}
       </div>
     </div>

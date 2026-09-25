@@ -13,6 +13,7 @@ import { levelService } from "../../services/level.service";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { transactionService } from "../../services/transaction.service";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { draftActionService } from "../../services/draft-action.service";
 import { subscriptionService } from "../../services/subscription.service";
 
 const DATE_FORMAT = "YYYY-MM-DD";
@@ -192,6 +193,39 @@ describe("HomePage", () => {
     expect(await screen.findByText("Netflix")).toBeInTheDocument();
     expect(screen.getByText("Space Gym")).toBeInTheDocument();
     expect(screen.getAllByText("ביטול")).toHaveLength(2);
+  });
+
+  it("opens the cancellation popup with a contact that arrived after the list was loaded", async () => {
+    setSession(SESSION);
+    const [netflix, spaceGym] = SUBSCRIPTIONS.items;
+    const spaceGymWithContact = {
+      ...spaceGym,
+      vendor: {
+        ...spaceGym.vendor,
+        cancellationMethod: "EMAIL" as const,
+        cancellationEmail: "cancel@spacegym.co.il",
+      },
+    };
+    vi.spyOn(draftActionService, "getByUser").mockResolvedValue({
+      items: [],
+      nextCursor: null,
+    });
+    vi.spyOn(subscriptionService, "getByUser")
+      .mockResolvedValueOnce(SUBSCRIPTIONS)
+      .mockResolvedValue({
+        nextCursor: null,
+        items: [netflix, spaceGymWithContact],
+      });
+
+    renderHomePage();
+    await screen.findByText("1,510 ₪");
+    await userEvent.click(screen.getByText("מנויים"));
+    const [, spaceGymCancel] = screen.getAllByText("ביטול");
+    await userEvent.click(spaceGymCancel);
+
+    expect(
+      await screen.findByDisplayValue("cancel@spacegym.co.il"),
+    ).toBeInTheDocument();
   });
 
   it("sums the fetched transactions per vendor category after switching to the cats tab", async () => {

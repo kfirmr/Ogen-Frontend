@@ -26,26 +26,4 @@ export const useStyles = () =>
       display: "flex",
       flexDirection: "column" as const,
     },
-    icon: {
-      width: 44,
-      height: 44,
-      display: "block",
-    },
-    text: {
-      flex: 1,
-      gap: 2,
-      display: "flex",
-      flexDirection: "column" as const,
-    },
-    name: {
-      fontSize: 17,
-      fontWeight: 700,
-      color: theme.colors.ink,
-      fontFamily: theme.fonts.body,
-    },
-    price: {
-      fontSize: 14,
-      color: theme.colors.muted,
-      fontFamily: theme.fonts.body,
-    },
   });

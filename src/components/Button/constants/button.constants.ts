@@ -82,8 +82,8 @@ export const BUTTON_VARIANT_TOKENS: Record<
     shadowColor: theme.colors.orangeDark,
     hoverBackground: theme.colors.orangeLight,
     disabledColor: theme.colors.white,
-    disabledBackground: theme.colors.orange,
-    disabledShadowColor: theme.colors.orangeDark,
+    disabledBackground: theme.colors.orangeDisabled,
+    disabledShadowColor: theme.colors.orangeDisabledShadow,
   },
   warningOutline: {
     color: theme.colors.orangeDark,

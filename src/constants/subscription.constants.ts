@@ -1,7 +1,7 @@
 import { theme } from "./theme.constants";
 import { TIME_UNITS } from "./date.constants";
 
-const MONTHS_PER_YEAR = 12;
+export const MONTHS_PER_YEAR = 12;
 const MONTHS_PER_QUARTER = 3;
 const WEEKS_PER_MONTH = TIME_UNITS.MONTHS / TIME_UNITS.WEEKS;
 
@@ -49,6 +49,7 @@ export const SUBSCRIPTION_SEGMENT_COLORS: string[] = [
 
 export const SUBSCRIPTION_LABELS = {
   UNKNOWN_VENDOR: "מנוי",
+  PER_YEAR: "בשנה",
   UNKNOWN_PRICE: "לא ידוע",
   SAVINGS_BADGE_PREFIX: "מצאנו",
   SAVINGS_BADGE_SUFFIX: "לחיסכון",

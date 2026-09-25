@@ -23,7 +23,12 @@ import { useUserProgress } from "../../hooks/user-progress.hook";
 import MonthPicker from "../../components/MonthPicker/MonthPicker";
 import { dismissInsightAction } from "../../actions/insight.actions";
 import { INSIGHTS_QUERY_KEY } from "../../constants/insight.constants";
+import { usePendingDraftActions } from "../../hooks/draft-actions.hook";
 import { USER_PROGRESS_QUERY_KEY } from "../../constants/level.constants";
+import { DRAFT_ACTION_LABELS } from "../../constants/draft-action.constants";
+import { getDraftActionsByInsightId } from "../../utilities/draft-action.utility";
+import { useSubscriptionCancellation } from "../../hooks/subscription-cancellation.hook";
+import CancelSubscriptionPopup from "../../components/CancelSubscriptionPopup/CancelSubscriptionPopup";
 
 const InsightsPage = () => {
   const months = getRecentMonths({ count: MONTHS_TO_SHOW });
@@ -32,6 +37,8 @@ const InsightsPage = () => {
   const user = useCurrentUser();
   const userProgress = useUserProgress();
   const insightRecords = useInsights();
+  const pendingDraftActions = usePendingDraftActions();
+  const cancellation = useSubscriptionCancellation();
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
   const [selectedMonthKey, setSelectedMonthKey] = useState(
     months[months.length - 1].key,
@@ -43,6 +50,8 @@ const InsightsPage = () => {
     toInsightViews(monthlyInsights),
     dismissedIds,
   );
+  const draftActionsByInsightId =
+    getDraftActionsByInsightId(pendingDraftActions);
 
   const handleDismiss = async (id: string) => {
     setDismissedIds((current) => current.concat(id));
@@ -57,6 +66,17 @@ const InsightsPage = () => {
         current.filter((dismissedId) => dismissedId !== id),
       );
     }
+  };
+
+  const buildReviewHandler = (insightId: string) => {
+    const draftAction = draftActionsByInsightId.get(insightId) ?? null;
+    const subscriptionId = draftAction?.subscriptionId ?? null;
+
+    if (subscriptionId === null) {
+      return null;
+    }
+
+    return () => cancellation.open(subscriptionId);
   };
 
   return (
@@ -88,6 +108,8 @@ const InsightsPage = () => {
               insight={insight}
               dismissText="הבנתי"
               onDismiss={handleDismiss}
+              reviewText={DRAFT_ACTION_LABELS.REVIEW}
+              onReview={buildReviewHandler(insight.id)}
             />
           ))}
 
@@ -102,6 +124,15 @@ const InsightsPage = () => {
           )}
         </div>
       </div>
+
+      {cancellation.request !== null && (
+        <CancelSubscriptionPopup
+          onSend={cancellation.send}
+          onClose={cancellation.close}
+          request={cancellation.request}
+          key={cancellation.request.subscription.id}
+        />
+      )}
 
       <BottomNav activeTab="insights" />
     </AppShell>

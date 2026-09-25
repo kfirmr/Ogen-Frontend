@@ -68,7 +68,11 @@ const TextField: FC<TTextfieldProps> = ({
   const { isValid, errorText } = validateInput(value, type, validator);
   const helperText = getHelperText({ errorText, warningText, infoText });
 
-  const styles = useStyles({ disabled, helperTextColor: helperText.color });
+  const styles = useStyles({
+    disabled,
+    multiline: Boolean(rest.multiline),
+    helperTextColor: helperText.color,
+  });
 
   const props = safeAssign(rest, {
     slotProps: {

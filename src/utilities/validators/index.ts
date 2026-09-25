@@ -5,3 +5,4 @@ export { validateNumber } from "./number.validator";
 export { validateHebrewText } from "./text.validator";
 export { validatePassword } from "./password.validator";
 export { validatePhoneNumber } from "./phone.validator";
+export { validateRequiredText } from "./required-text.validator";

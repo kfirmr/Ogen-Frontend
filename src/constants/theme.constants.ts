@@ -9,6 +9,7 @@ export const theme = {
     cardLarge: "32px",
     section: "36px",
     input: "17px",
+    multilineInput: "22px",
   },
   background: {
     page: "#FDFDF9",
@@ -19,6 +20,7 @@ export const theme = {
     fillHover: "#EDEADB",
     dashed: "#FBF9F0",
     lightGray: "#F6F8FB",
+    inputFill: "#FBFAF4",
   },
   colors: {
     info: "#1D2B4F",
@@ -46,6 +48,8 @@ export const theme = {
     orangeTintSoft: "#FFF6EC",
     orangeTintSoftHover: "#FFEFDD",
     orangeTintShadow: "#F0DCC4",
+    orangeDisabled: "#F6D3AC",
+    orangeDisabledShadow: "#E6BC8E",
     gold: "#FFC300",
     goldDark: "#D9A500",
     goldTint: "#FFD968",
