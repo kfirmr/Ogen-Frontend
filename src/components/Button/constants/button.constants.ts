@@ -6,6 +6,7 @@ export type TButtonVariant =
   | "warning"
   | "warningOutline"
   | "gold"
+  | "muted"
   | "ghost"
   | "text";
 export type TButtonSize = "medium" | "small";
@@ -39,6 +40,7 @@ export const MUI_VARIANT_BY_BUTTON_VARIANT: Record<
   ghost: "text",
   text: "text",
   gold: "contained",
+  muted: "contained",
   primary: "contained",
   warning: "contained",
   secondary: "outlined",
@@ -103,6 +105,14 @@ export const BUTTON_VARIANT_TOKENS: Record<
     disabledColor: theme.colors.ink,
     disabledBackground: theme.colors.gold,
     disabledShadowColor: theme.colors.goldDark,
+  },
+  muted: {
+    color: theme.tabBar.inactiveText,
+    background: theme.background.muted,
+    shadowColor: theme.border.muted,
+    disabledColor: theme.tabBar.inactiveText,
+    disabledBackground: theme.background.muted,
+    disabledShadowColor: theme.border.muted,
   },
   ghost: {
     color: theme.colors.ink,

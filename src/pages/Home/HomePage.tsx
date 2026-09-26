@@ -22,8 +22,8 @@ import {
 
 import { useStyles } from "./HomePage.style";
 import { useState, type ReactNode } from "react";
-import UploadCard from "./components/UploadCard";
 import TabBar from "../../components/TabBar/TabBar";
+import { HOME_TABS } from "./constants/home.constants";
 import { useCurrentUser } from "../../store/auth.store";
 import CategoriesCard from "./components/CategoriesCard";
 import FoundMoneyCard from "./components/FoundMoneyCard";
@@ -35,14 +35,12 @@ import TransactionsPopup from "./components/TransactionsPopup";
 import { getRecentMonths } from "../../utilities/date.utility";
 import SubscriptionsCard from "./components/SubscriptionsCard";
 import PageHeader from "../../components/PageHeader/PageHeader";
-import GuideSteps from "../../components/GuideSteps/GuideSteps";
-import GuideModal from "../../components/GuideModal/GuideModal";
 import { useTransactions } from "../../hooks/transactions.hook";
 import { MONTHS_TO_SHOW } from "../../constants/date.constants";
 import { useUserProgress } from "../../hooks/user-progress.hook";
 import { useSubscriptions } from "../../hooks/subscriptions.hook";
 import MonthPicker from "../../components/MonthPicker/MonthPicker";
-import { HOME_TABS, CSV_GUIDE_STEPS } from "./constants/home.constants";
+import BankConnectCard from "./components/BankConnect/BankConnectCard";
 import { useSubscriptionCancellation } from "../../hooks/subscription-cancellation.hook";
 import CancelSubscriptionPopup from "../../components/CancelSubscriptionPopup/CancelSubscriptionPopup";
 
@@ -50,7 +48,6 @@ const HomePage = () => {
   const months = getRecentMonths({ count: MONTHS_TO_SHOW });
   const styles = useStyles();
   const user = useCurrentUser();
-  const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(HOME_TABS[0].key);
   const [isTransactionsPopupOpen, setIsTransactionsPopupOpen] = useState(false);
   const [selectedMonthKey, setSelectedMonthKey] = useState(
@@ -107,14 +104,6 @@ const HomePage = () => {
     ),
   };
 
-  const handleGuideConfirm = async () => {};
-
-  const handleImportedMonth = (monthKey: string) => {
-    if (months.some((month) => month.key === monthKey)) {
-      setSelectedMonthKey(monthKey);
-    }
-  };
-
   return (
     <AppShell sx={styles.shell}>
       <PageHeader
@@ -130,10 +119,7 @@ const HomePage = () => {
         progress={getLevelProgressPercent(userProgress)}
       />
 
-      <UploadCard
-        onImportedMonth={handleImportedMonth}
-        onOpenGuide={() => setIsGuideOpen(true)}
-      />
+      <BankConnectCard />
 
       <div style={styles.monthlyBand}>
         <MonthPicker
@@ -163,21 +149,6 @@ const HomePage = () => {
         transactions={allTransactionViews}
         onClose={() => setIsTransactionsPopupOpen(false)}
       />
-
-      <GuideModal
-        open={isGuideOpen}
-        eyebrow="מפת האוצר"
-        title="איך מורידים קובץ CSV?"
-        onClose={() => setIsGuideOpen(false)}
-        subtitle="שישה שלבים באתר האשראי — ואז מעלים לעוגן."
-        primaryButton={{ text: "הבנתי, נתחיל", onClick: handleGuideConfirm }}
-        secondaryButton={{
-          text: "אחר כך",
-          onClick: () => setIsGuideOpen(false),
-        }}
-      >
-        <GuideSteps steps={CSV_GUIDE_STEPS} />
-      </GuideModal>
     </AppShell>
   );
 };

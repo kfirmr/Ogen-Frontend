@@ -18,6 +18,7 @@ export const theme = {
     tintSoft: "#F8FCF9",
     fill: "#F5F3E8",
     fillHover: "#EDEADB",
+    muted: "#EDEAE0",
     dashed: "#FBF9F0",
     lightGray: "#F6F8FB",
     inputFill: "#FBFAF4",
@@ -68,6 +69,7 @@ export const theme = {
     subtle: "#F3F1E7",
     faint: "#EFEDE2",
     tintSoft: "#DDEFE4",
+    muted: "#DEDACB",
   },
   shadow: {
     default: "#EDEBE0",
