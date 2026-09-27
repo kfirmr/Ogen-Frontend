@@ -1,6 +1,7 @@
 export const TIMEZONE = "Asia/Jerusalem";
 
-export const MONTHS_TO_SHOW = 5;
+// Matches the year of history a bank connection imports, so every imported month is reachable.
+export const MONTHS_TO_SHOW = 12;
 
 export const DATE_FORMAT = {
   TIME: "HH:mm",

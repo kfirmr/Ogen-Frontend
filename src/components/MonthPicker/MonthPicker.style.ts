@@ -3,14 +3,18 @@ import { theme } from "../../constants/theme.constants";
 
 export const useStyles = () =>
   createStyles({
+    scroller: {
+      overflowX: "auto" as const,
+      scrollbarWidth: "none" as const,
+      WebkitOverflowScrolling: "touch" as const,
+    },
     row: {
       gap: 10,
       display: "flex",
-      overflowX: "auto" as const,
+      width: "max-content",
+      marginInline: "auto",
       alignItems: "center",
-      justifyContent: "center",
       padding: "4px 2px 8px",
-      flexDirection: "row-reverse" as const,
     },
     coin: ({ isActive }: { isActive: boolean }) => ({
       gap: 2,
