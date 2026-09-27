@@ -2,10 +2,12 @@ import type {
   ITransaction,
   ICategoryTotal,
   ITransactionSummary,
+  ISubscriptionCharge,
 } from "../interfaces/transaction.interface";
 
 import { isRecord } from "./free-text-response.utility";
 import { isVendorSummary } from "./vendor-response.utility";
+import { isSubscription } from "./subscription-response.utility";
 import type { IBatchCursor, IBatchResult } from "../interfaces/batch.interface";
 
 const isTransaction = (value: unknown): value is ITransaction => {
@@ -78,6 +80,14 @@ const isCategoryTotal = (value: unknown): value is ICategoryTotal => {
   return hasAmount && hasValidCategory;
 };
 
+const isSubscriptionCharge = (value: unknown): value is ISubscriptionCharge => {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return typeof value.amount === "string" && isSubscription(value.subscription);
+};
+
 const isTransactionSummary = (value: unknown): value is ITransactionSummary => {
   if (!isRecord(value)) {
     return false;
@@ -86,7 +96,13 @@ const isTransactionSummary = (value: unknown): value is ITransactionSummary => {
   const hasCategories =
     Array.isArray(value.categories) && value.categories.every(isCategoryTotal);
 
-  return hasCategories && typeof value.nonSubscriptionAmount === "string";
+  const hasSubscriptionCharges =
+    Array.isArray(value.subscriptionCharges) &&
+    value.subscriptionCharges.every(isSubscriptionCharge);
+  const hasNonSubscriptionAmount =
+    typeof value.nonSubscriptionAmount === "string";
+
+  return hasCategories && hasSubscriptionCharges && hasNonSubscriptionAmount;
 };
 
 export const toTransactionSummary = (data: unknown): ITransactionSummary => {

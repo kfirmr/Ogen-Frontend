@@ -7,6 +7,7 @@ import { TRANSACTION_SUMMARY_QUERY_KEY } from "../constants/transaction.constant
 
 const EMPTY_SUMMARY: ITransactionSummary = {
   categories: [],
+  subscriptionCharges: [],
   nonSubscriptionAmount: "0",
 };
 

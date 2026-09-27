@@ -11,12 +11,11 @@ import type {
   ISubscriptionView,
 } from "../interfaces/subscription.interface";
 
-import { formatMoney } from "./money.utility";
 import { getVendorCategoryIcon } from "./vendor.utility";
+import { formatMoney, parseAmount } from "./money.utility";
 import { DEFAULT_CURRENCY } from "../constants/money.constants";
 import type { IExpenseSegment } from "../interfaces/expense.interface";
-import { getNonSubscriptionExpensesTotal } from "./transaction.utility";
-import type { ITransactionSummary } from "../interfaces/transaction.interface";
+import type { ISubscriptionCharge } from "../interfaces/transaction.interface";
 
 const getSubscriptionName = (subscription: ISubscription): string => {
   if (subscription.vendor == null) {
@@ -29,9 +28,12 @@ const getSubscriptionName = (subscription: ISubscription): string => {
 const getSubscriptionIcon = (subscription: ISubscription): string =>
   getVendorCategoryIcon(subscription.vendor?.category ?? null);
 
-const getSubscriptionPrice = (subscription: ISubscription): string => {
+const formatSubscriptionPrice = (
+  subscription: ISubscription,
+  amount: string,
+): string => {
   const formattedAmount = formatMoney({
-    amount: subscription.amount,
+    amount,
     currency: subscription.currency,
   });
 
@@ -67,12 +69,19 @@ export const toSubscriptionView = (
   id: subscription.id,
   icon: getSubscriptionIcon(subscription),
   name: getSubscriptionName(subscription),
-  price: getSubscriptionPrice(subscription),
+  price: formatSubscriptionPrice(subscription, subscription.amount),
 });
 
-export const toSubscriptionViews = (
-  subscriptions: ISubscription[],
-): ISubscriptionView[] => subscriptions.map(toSubscriptionView);
+const toSubscriptionChargeView = (
+  charge: ISubscriptionCharge,
+): ISubscriptionView => ({
+  ...toSubscriptionView(charge.subscription),
+  price: formatSubscriptionPrice(charge.subscription, charge.amount),
+});
+
+export const toSubscriptionChargeViews = (
+  charges: ISubscriptionCharge[],
+): ISubscriptionView[] => charges.map(toSubscriptionChargeView);
 
 export const getSubscriptionYearlyCostLabel = (
   subscription: ISubscription,
@@ -90,34 +99,19 @@ export const getSubscriptionYearlyCostLabel = (
   return `${formattedAmount} ${SUBSCRIPTION_LABELS.PER_YEAR}`;
 };
 
-export const toSubscriptionSegments = (
-  subscriptions: ISubscription[],
+export const toSubscriptionChargeSegments = (
+  charges: ISubscriptionCharge[],
 ): IExpenseSegment[] =>
-  subscriptions.map((subscription, index) => ({
+  charges.map((charge, index) => ({
     color: getSegmentColor(index),
-    value: getMonthlyAmount(subscription),
-    label: getSubscriptionName(subscription),
+    value: Math.round(parseAmount(charge.amount)),
+    label: getSubscriptionName(charge.subscription),
   }));
 
 export const getSubscriptionsTotal = (
   subscriptions: ISubscription[],
 ): string => {
   const total = getSubscriptionsMonthlySum(subscriptions);
-  const currency = subscriptions[0]?.currency ?? DEFAULT_CURRENCY;
-
-  return (
-    formatMoney({ currency, amount: String(total) }) ??
-    SUBSCRIPTION_LABELS.UNKNOWN_PRICE
-  );
-};
-
-export const getTotalExpenses = (
-  subscriptions: ISubscription[],
-  summary: ITransactionSummary,
-): string => {
-  const total =
-    getSubscriptionsMonthlySum(subscriptions) +
-    getNonSubscriptionExpensesTotal(summary);
   const currency = subscriptions[0]?.currency ?? DEFAULT_CURRENCY;
 
   return (

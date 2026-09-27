@@ -6,6 +6,7 @@ import {
 } from "../../utilities/level.utility";
 
 import {
+  getTotalExpenses,
   toCategoryExpenses,
   toTransactionViews,
   toNonSubscriptionSegment,
@@ -13,10 +14,9 @@ import {
 } from "../../utilities/transaction.utility";
 
 import {
-  getTotalExpenses,
-  toSubscriptionViews,
-  toSubscriptionSegments,
   getSubscriptionsSubtitle,
+  toSubscriptionChargeViews,
+  toSubscriptionChargeSegments,
   getSubscriptionsSavingsBadge,
 } from "../../utilities/subscription.utility";
 
@@ -62,11 +62,15 @@ const HomePage = () => {
 
   const name = user?.fullName ?? "";
   const categoryExpenses = toCategoryExpenses(transactionSummary);
-  const subscriptionViews = toSubscriptionViews(subscriptions);
+  const subscriptionViews = toSubscriptionChargeViews(
+    transactionSummary.subscriptionCharges,
+  );
   const transactionViews = toRecentTransactionViews(transactions);
   const allTransactionViews = toTransactionViews(transactions);
   const nonSubscriptionSegment = toNonSubscriptionSegment(transactionSummary);
-  const subscriptionSegments = toSubscriptionSegments(subscriptions);
+  const subscriptionSegments = toSubscriptionChargeSegments(
+    transactionSummary.subscriptionCharges,
+  );
   const foundMoneySegments =
     nonSubscriptionSegment == null
       ? subscriptionSegments
@@ -77,8 +81,8 @@ const HomePage = () => {
       <FoundMoneyCard
         totalLabel="סה״כ הוצאות"
         segments={foundMoneySegments}
+        totalAmount={getTotalExpenses(transactionSummary)}
         badgeText={getSubscriptionsSavingsBadge(subscriptions)}
-        totalAmount={getTotalExpenses(subscriptions, transactionSummary)}
       />
     ),
     subs: (

@@ -24,7 +24,7 @@ const isNullableVendorSummary = (value: unknown): boolean => {
   return isVendorSummary(value);
 };
 
-const isSubscription = (value: unknown): value is ISubscription => {
+export const isSubscription = (value: unknown): value is ISubscription => {
   if (!isRecord(value)) {
     return false;
   }
