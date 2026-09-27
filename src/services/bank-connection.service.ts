@@ -3,8 +3,12 @@ import type {
   IConnectBankRequest,
 } from "../interfaces/bank-connection.interface";
 
+import {
+  isBankConnection,
+  toBankConnections,
+} from "../utilities/bank-connection-response.utility";
+
 import { apiClient } from "./api-client";
-import { isBankConnection } from "../utilities/bank-connection-response.utility";
 
 const BANK_CONNECTION_ENDPOINTS = {
   BASE: "/bank-connection",
@@ -26,6 +30,18 @@ class BankConnectionService {
     );
 
     return toBankConnection(response.data);
+  }
+
+  async getByUser(): Promise<IBankConnection[]> {
+    const response = await apiClient.get<unknown>(
+      BANK_CONNECTION_ENDPOINTS.BASE,
+    );
+
+    return toBankConnections(response.data);
+  }
+
+  async disconnect(id: string): Promise<void> {
+    await apiClient.delete(`${BANK_CONNECTION_ENDPOINTS.BASE}/${id}`);
   }
 
   async getById(id: string): Promise<IBankConnection> {

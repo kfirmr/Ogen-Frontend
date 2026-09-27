@@ -1,10 +1,14 @@
+import {
+  BANK_CONNECT_MESSAGES,
+  CONNECTED_ACCOUNT_LABELS,
+} from "../constants/bank-connection.constants";
+
 import type {
   IBankConnection,
   IConnectBankRequest,
 } from "../interfaces/bank-connection.interface";
 
 import { bankConnectionService } from "../services/bank-connection.service";
-import { BANK_CONNECT_MESSAGES } from "../constants/bank-connection.constants";
 
 export interface IConnectBankActionResult {
   errorMessage: string | null;
@@ -25,5 +29,19 @@ export const connectBankAction = async (
       connection: null,
       errorMessage: BANK_CONNECT_MESSAGES.SEND_FAILED,
     };
+  }
+};
+
+export const disconnectBankAction = async (
+  connectionId: string,
+): Promise<string | null> => {
+  try {
+    await bankConnectionService.disconnect(connectionId);
+
+    return null;
+  } catch (error) {
+    console.error("Failed to disconnect bank account", error);
+
+    return CONNECTED_ACCOUNT_LABELS.DISCONNECT_FAILED;
   }
 };

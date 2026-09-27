@@ -7,6 +7,12 @@ import type {
 
 import type { TFieldType } from "../components/TextField/constants/textfield.constants";
 
+export interface IBankLoginHint {
+  idLastDigits: string | null;
+  cardLastDigits: string | null;
+  usernamePrefix: string | null;
+}
+
 export interface IBankConnection {
   id: string;
   createdAt: string;
@@ -14,12 +20,14 @@ export interface IBankConnection {
   company: TBankCompanyIdType;
   lastSyncedAt: string | null;
   otpRequestedAt: string | null;
+  loginHint: IBankLoginHint | null;
   status: TBankConnectionStatusType;
 }
 
 export interface IBankCompany {
   name: string;
   mark: string;
+  kindLabel: string;
   checkPhrase: string;
   id: TBankCompanyIdType;
   fields: TBankCredentialFieldType[];
@@ -51,4 +59,16 @@ export interface IConnectBankRequest {
 export interface IBankConnectOutcome {
   step: TBankConnectStepType;
   errorMessage: string | null;
+}
+
+export interface IConnectedAccountRow {
+  label: string;
+  value: string;
+}
+
+export interface IConnectedAccountView {
+  name: string;
+  mark: string;
+  kindLabel: string;
+  rows: IConnectedAccountRow[];
 }

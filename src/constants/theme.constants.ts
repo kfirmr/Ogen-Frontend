@@ -49,6 +49,8 @@ export const theme = {
     orangeTintSoft: "#FFF6EC",
     orangeTintSoftHover: "#FFEFDD",
     orangeTintShadow: "#F0DCC4",
+    orangeInk: "#6B5A48",
+    orangeDeep: "#B8621A",
     orangeDisabled: "#F6D3AC",
     orangeDisabledShadow: "#E6BC8E",
     gold: "#FFC300",

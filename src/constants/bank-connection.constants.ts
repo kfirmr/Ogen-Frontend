@@ -10,6 +10,16 @@ import lockIcon from "../assets/icons/lock.png";
 
 export const BANK_CONNECTION_QUERY_KEY = ["bank-connection"] as const;
 
+export const BANK_CONNECTIONS_LIST_QUERY_KEY = [
+  ...BANK_CONNECTION_QUERY_KEY,
+  "list",
+] as const;
+
+const ACCOUNT_KIND_LABELS = {
+  BANK: "חשבון בנק",
+  CREDIT_CARD: "כרטיס אשראי",
+} as const;
+
 export const BANK_CONNECTION_STATUSES = {
   ACTIVE: "ACTIVE",
   FAILED: "FAILED",
@@ -131,6 +141,7 @@ export const BANK_COMPANIES: IBankCompany[] = [
     mark: "י",
     name: "ישראכרט",
     fields: ID_LOGIN,
+    kindLabel: ACCOUNT_KIND_LABELS.CREDIT_CARD,
     checkPhrase: ID_LOGIN_CHECK,
     id: BANK_COMPANY_IDS.ISRACARD,
   },
@@ -138,6 +149,7 @@ export const BANK_COMPANIES: IBankCompany[] = [
     mark: "מ",
     name: "מקס",
     id: BANK_COMPANY_IDS.MAX,
+    kindLabel: ACCOUNT_KIND_LABELS.CREDIT_CARD,
     fields: USERNAME_LOGIN,
     checkPhrase: USERNAME_LOGIN_CHECK,
   },
@@ -145,6 +157,7 @@ export const BANK_COMPANIES: IBankCompany[] = [
     mark: "כ",
     name: "כאל",
     fields: USERNAME_LOGIN,
+    kindLabel: ACCOUNT_KIND_LABELS.CREDIT_CARD,
     id: BANK_COMPANY_IDS.VISA_CAL,
     checkPhrase: USERNAME_LOGIN_CHECK,
   },
@@ -152,12 +165,14 @@ export const BANK_COMPANIES: IBankCompany[] = [
     mark: "א",
     fields: ID_LOGIN,
     name: "אמריקן אקספרס",
+    kindLabel: ACCOUNT_KIND_LABELS.CREDIT_CARD,
     id: BANK_COMPANY_IDS.AMEX,
     checkPhrase: ID_LOGIN_CHECK,
   },
   {
     mark: "פ",
     name: "בנק הפועלים",
+    kindLabel: ACCOUNT_KIND_LABELS.BANK,
     id: BANK_COMPANY_IDS.HAPOALIM,
     checkPhrase: "קוד המשתמש והסיסמה",
     fields: [BANK_CREDENTIAL_FIELDS.USER_CODE, BANK_CREDENTIAL_FIELDS.PASSWORD],
@@ -165,6 +180,7 @@ export const BANK_COMPANIES: IBankCompany[] = [
   {
     mark: "ל",
     name: "בנק לאומי",
+    kindLabel: ACCOUNT_KIND_LABELS.BANK,
     fields: USERNAME_LOGIN,
     id: BANK_COMPANY_IDS.LEUMI,
     checkPhrase: USERNAME_LOGIN_CHECK,
@@ -178,7 +194,35 @@ export const BANK_CONNECTION_POLLING = {
   SLOW_AFTER_MS: 75 * TIME_UNITS.SECONDS,
 } as const;
 
-export const BANK_CONNECTED_XP_LABEL = "50 XP";
+export const BANK_CONNECTED_XP_LABEL = "+50 XP";
+
+export const CONNECTED_ACCOUNT_LABELS = {
+  CARD: "כרטיס",
+  USER: "משתמש",
+  CONNECTED: "מחובר",
+  TODAY: "היום",
+  YESTERDAY: "אתמול",
+  ID: "תעודת זהות",
+  CONNECTED_AT: "חובר ב־",
+  LAST_SYNC: "סנכרון אחרון",
+  KEEP_CONNECTED: "השאר מחובר",
+  DISCONNECT: "ניתוק החשבון",
+  CONFIRM_DISCONNECT: "נתק",
+  DISCONNECTING: "מנתק…",
+  AWAITING_FIRST_SYNC: "ממתין לסנכרון ראשון",
+  DISCONNECT_FAILED: "הניתוק נכשל. נסה שוב בעוד רגע.",
+  DISCONNECT_BODY:
+    "נפסיק למשוך עסקאות, ונמחק את פרטי ההתחברות, את העסקאות שנמשכו מהחשבון ואת המנויים שחויבו רק בו.",
+  DISCONNECT_TITLE: (companyName: string) => `לנתק את ${companyName}?`,
+  JUST_CONNECTED: "החשבון חובר — קיבלת",
+} as const;
+
+// Masked the way the login screen shows them: enough for the owner to recognize the account.
+export const LOGIN_HINT_MASKS = {
+  ID: "••••••",
+  CARD: "•••• ",
+  USERNAME_SUFFIX: "•••",
+} as const;
 
 export const BANK_CONNECT_MESSAGES = {
   SEND_FAILED: "לא הצלחנו לשלוח את הפרטים. בדוק את החיבור לאינטרנט ונסה שוב.",
