@@ -7,6 +7,16 @@ interface IFormatMoneyOptions {
   currency: string;
 }
 
+export const parseAmount = (amount: string): number => {
+  const value = Number.parseFloat(amount);
+
+  if (Number.isNaN(value)) {
+    return 0;
+  }
+
+  return value;
+};
+
 export const formatMoney = (options: IFormatMoneyOptions): string | null => {
   const amount = Number.parseFloat(options.amount);
 

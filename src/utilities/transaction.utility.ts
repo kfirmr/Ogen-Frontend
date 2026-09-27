@@ -21,12 +21,14 @@ import type {
   ICategoryTotal,
   ITransactionView,
   ITransactionSummary,
+  ISubscriptionCharge,
 } from "../interfaces/transaction.interface";
 
-import { formatExpense } from "./money.utility";
 import { DATE_FORMAT } from "../constants/date.constants";
+import { DEFAULT_CURRENCY } from "../constants/money.constants";
 import { formatDate, getDaysAgo, normalizeDate } from "./date.utility";
 import { FALLBACK_VENDOR_CATEGORY } from "../constants/vendor.constants";
+import { formatMoney, formatExpense, parseAmount } from "./money.utility";
 
 const DAY_LABELS: Record<number, string> = {
   0: TRANSACTION_LABELS.TODAY,
@@ -57,16 +59,6 @@ const getTransactionAmount = (transaction: ITransaction): string =>
     amount: transaction.amount,
     currency: transaction.currency,
   }) ?? TRANSACTION_LABELS.UNKNOWN_AMOUNT;
-
-const parseAmount = (amount: string): number => {
-  const value = Number.parseFloat(amount);
-
-  if (Number.isNaN(value)) {
-    return 0;
-  }
-
-  return value;
-};
 
 // Uncategorized spend and OTHER share one slice, so the chart never shows two "other" rows.
 const sumByCategory = (categoryTotals: ICategoryTotal[]): Map<string, number> =>
@@ -129,4 +121,24 @@ export const toNonSubscriptionSegment = (
     color: NON_SUBSCRIPTION_SEGMENT_COLOR,
     label: TRANSACTION_LABELS.NON_SUBSCRIPTION_EXPENSES,
   };
+};
+
+const sumChargeAmounts = (charges: ISubscriptionCharge[]): number =>
+  charges.reduce((sum, charge) => sum + parseAmount(charge.amount), 0);
+
+const getSummaryCurrency = (summary: ITransactionSummary): string =>
+  summary.subscriptionCharges[0]?.subscription.currency ?? DEFAULT_CURRENCY;
+
+// Everything actually charged in the month: subscriptions at their real charge, plus the rest.
+export const getTotalExpenses = (summary: ITransactionSummary): string => {
+  const total =
+    sumChargeAmounts(summary.subscriptionCharges) +
+    parseAmount(summary.nonSubscriptionAmount);
+
+  return (
+    formatMoney({
+      currency: getSummaryCurrency(summary),
+      amount: String(Math.round(total)),
+    }) ?? TRANSACTION_LABELS.UNKNOWN_AMOUNT
+  );
 };

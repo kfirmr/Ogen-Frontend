@@ -1,5 +1,6 @@
 import type { IBatchCursor } from "./batch.interface";
 import type { IVendorSummary } from "./vendor.interface";
+import type { ISubscription } from "./subscription.interface";
 
 export interface ITransaction {
   id: string;
@@ -32,9 +33,15 @@ export interface ICategoryTotal {
   category: string | null;
 }
 
+export interface ISubscriptionCharge {
+  amount: string;
+  subscription: ISubscription;
+}
+
 export interface ITransactionSummary {
   categories: ICategoryTotal[];
   nonSubscriptionAmount: string;
+  subscriptionCharges: ISubscriptionCharge[];
 }
 
 export interface IGetTransactionSummaryRequest {

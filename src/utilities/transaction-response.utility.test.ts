@@ -38,11 +38,22 @@ describe("toTransactionBatch", () => {
 describe("toTransactionSummary", () => {
   it("accepts a summary with uncategorized spend", () => {
     const summary = {
+      subscriptionCharges: [],
       nonSubscriptionAmount: "4639.60",
       categories: [{ category: null, amount: "45.00" }],
     };
 
     expect(toTransactionSummary(summary)).toEqual(summary);
+  });
+
+  it("rejects a charge without its subscription", () => {
+    const summary = {
+      categories: [],
+      nonSubscriptionAmount: "0",
+      subscriptionCharges: [{ amount: "69.90" }],
+    };
+
+    expect(() => toTransactionSummary(summary)).toThrow();
   });
 
   it("rejects a summary without a non-subscription total", () => {

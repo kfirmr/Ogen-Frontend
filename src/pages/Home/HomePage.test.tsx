@@ -110,8 +110,14 @@ const TRANSACTIONS = {
   ],
 };
 
+const [NETFLIX, SPACE_GYM] = SUBSCRIPTIONS.items;
+
 const TRANSACTION_SUMMARY = {
   nonSubscriptionAmount: "1410.00",
+  subscriptionCharges: [
+    { amount: "360.00", subscription: SPACE_GYM },
+    { amount: "69.90", subscription: NETFLIX },
+  ],
   categories: [
     { category: "UTILITIES", amount: "850.00" },
     { category: null, amount: "320.00" },
@@ -194,15 +200,15 @@ describe("HomePage", () => {
     expect(levelService.getUserProgress).not.toHaveBeenCalled();
   });
 
-  it("charts the fetched subscriptions as monthly expenses in the overview tab", async () => {
+  it("charts the subscriptions charged this month at their charged amount", async () => {
     setSession(SESSION);
 
     renderHomePage();
 
-    expect(await screen.findByText("1,510 ₪")).toBeInTheDocument();
+    expect(await screen.findByText("1,840 ₪")).toBeInTheDocument();
     expect(screen.getByText("מצאנו 100 ₪ לחיסכון")).toBeInTheDocument();
     expect(screen.getByText("70 ₪")).toBeInTheDocument();
-    expect(screen.getByText("30 ₪")).toBeInTheDocument();
+    expect(screen.getByText("360 ₪")).toBeInTheDocument();
     expect(screen.getByText("Netflix")).toBeInTheDocument();
     expect(screen.getByText("Space Gym")).toBeInTheDocument();
     expect(screen.getByText("שאר ההוצאות")).toBeInTheDocument();
@@ -213,7 +219,7 @@ describe("HomePage", () => {
     setSession(SESSION);
 
     renderHomePage();
-    await screen.findByText("1,510 ₪");
+    await screen.findByText("1,840 ₪");
 
     await userEvent.click(screen.getByText("מנויים"));
 
@@ -245,9 +251,9 @@ describe("HomePage", () => {
       });
 
     renderHomePage();
-    await screen.findByText("1,510 ₪");
+    await screen.findByText("1,840 ₪");
     await userEvent.click(screen.getByText("מנויים"));
-    const [, spaceGymCancel] = screen.getAllByText("ביטול");
+    const [spaceGymCancel] = screen.getAllByText("ביטול");
     await userEvent.click(spaceGymCancel);
 
     expect(
@@ -259,7 +265,7 @@ describe("HomePage", () => {
     setSession(SESSION);
 
     renderHomePage();
-    await screen.findByText("1,510 ₪");
+    await screen.findByText("1,840 ₪");
 
     await userEvent.click(screen.getByText("קטגוריות"));
 
@@ -275,7 +281,7 @@ describe("HomePage", () => {
     setSession(SESSION);
 
     renderHomePage();
-    await screen.findByText("1,510 ₪");
+    await screen.findByText("1,840 ₪");
 
     await userEvent.click(screen.getByText("תנועות"));
 
@@ -296,7 +302,7 @@ describe("HomePage", () => {
 
     renderHomePage();
 
-    expect(await screen.findByText("5,487 ₪")).toBeInTheDocument();
+    expect(await screen.findByText("5,817 ₪")).toBeInTheDocument();
   });
 
   it("lists transactions from every page in the full month popup", async () => {
@@ -309,7 +315,7 @@ describe("HomePage", () => {
       });
 
     renderHomePage();
-    await screen.findByText("1,510 ₪");
+    await screen.findByText("1,840 ₪");
     await userEvent.click(screen.getByText("תנועות"));
     await userEvent.click(screen.getByText("הכל"));
 
@@ -317,5 +323,21 @@ describe("HomePage", () => {
     expect(transactionService.getByUser).toHaveBeenLastCalledWith(
       expect.objectContaining({ batchCursor: NEXT_PAGE_CURSOR }),
     );
+  });
+
+  it("leaves out a subscription that was not charged this month", async () => {
+    setSession(SESSION);
+    vi.spyOn(transactionService, "getSummary").mockResolvedValue({
+      ...TRANSACTION_SUMMARY,
+      subscriptionCharges: [{ amount: "69.90", subscription: NETFLIX }],
+    });
+
+    renderHomePage();
+    await screen.findByText("1,480 ₪");
+    await userEvent.click(screen.getByText("מנויים"));
+
+    expect(await screen.findByText("Netflix")).toBeInTheDocument();
+    expect(screen.queryByText("Space Gym")).not.toBeInTheDocument();
+    expect(screen.getAllByText("ביטול")).toHaveLength(1);
   });
 });
