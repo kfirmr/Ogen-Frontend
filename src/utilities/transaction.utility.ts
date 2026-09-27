@@ -18,7 +18,9 @@ import {
 
 import type {
   ITransaction,
+  ICategoryTotal,
   ITransactionView,
+  ITransactionSummary,
 } from "../interfaces/transaction.interface";
 
 import { formatExpense } from "./money.utility";
@@ -56,32 +58,32 @@ const getTransactionAmount = (transaction: ITransaction): string =>
     currency: transaction.currency,
   }) ?? TRANSACTION_LABELS.UNKNOWN_AMOUNT;
 
-const getTransactionValue = (transaction: ITransaction): number => {
-  const amount = Number.parseFloat(transaction.amount);
+const parseAmount = (amount: string): number => {
+  const value = Number.parseFloat(amount);
 
-  if (Number.isNaN(amount)) {
+  if (Number.isNaN(value)) {
     return 0;
   }
 
-  return amount;
+  return value;
 };
 
-const sumByCategory = (transactions: ITransaction[]): Map<string, number> =>
-  transactions.reduce((totals, transaction) => {
-    const category =
-      getTransactionCategory(transaction) ?? FALLBACK_VENDOR_CATEGORY;
+// Uncategorized spend and OTHER share one slice, so the chart never shows two "other" rows.
+const sumByCategory = (categoryTotals: ICategoryTotal[]): Map<string, number> =>
+  categoryTotals.reduce((totals, categoryTotal) => {
+    const category = categoryTotal.category ?? FALLBACK_VENDOR_CATEGORY;
     const total = totals.get(category) ?? 0;
 
-    return totals.set(category, total + getTransactionValue(transaction));
+    return totals.set(category, total + parseAmount(categoryTotal.amount));
   }, new Map<string, number>());
 
 const byDescendingDate = (first: ITransaction, second: ITransaction): number =>
   second.transactionDate.localeCompare(first.transactionDate);
 
 export const toCategoryExpenses = (
-  transactions: ITransaction[],
+  summary: ITransactionSummary,
 ): ICategoryExpense[] =>
-  [...sumByCategory(transactions).entries()]
+  [...sumByCategory(summary.categories).entries()]
     .sort(([, first], [, second]) => second - first)
     .slice(0, TOP_EXPENSE_CATEGORIES_COUNT)
     .map(([category, value], index) => ({
@@ -109,22 +111,14 @@ export const toRecentTransactionViews = (
 ): ITransactionView[] =>
   toTransactionViews(transactions).slice(0, RECENT_TRANSACTIONS_COUNT);
 
-const isNonSubscriptionTransaction = (transaction: ITransaction): boolean =>
-  transaction.subscriptionId == null;
-
 export const getNonSubscriptionExpensesTotal = (
-  transactions: ITransaction[],
-): number =>
-  Math.round(
-    transactions
-      .filter(isNonSubscriptionTransaction)
-      .reduce((sum, transaction) => sum + getTransactionValue(transaction), 0),
-  );
+  summary: ITransactionSummary,
+): number => Math.round(parseAmount(summary.nonSubscriptionAmount));
 
 export const toNonSubscriptionSegment = (
-  transactions: ITransaction[],
+  summary: ITransactionSummary,
 ): IExpenseSegment | null => {
-  const value = getNonSubscriptionExpensesTotal(transactions);
+  const value = getNonSubscriptionExpensesTotal(summary);
 
   if (value <= 0) {
     return null;

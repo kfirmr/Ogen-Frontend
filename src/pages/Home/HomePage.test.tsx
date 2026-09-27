@@ -110,6 +110,30 @@ const TRANSACTIONS = {
   ],
 };
 
+const TRANSACTION_SUMMARY = {
+  nonSubscriptionAmount: "1410.00",
+  categories: [
+    { category: "UTILITIES", amount: "850.00" },
+    { category: null, amount: "320.00" },
+    { category: "COMMUNICATION", amount: "240.00" },
+  ],
+};
+
+const NEXT_PAGE_CURSOR = {
+  id: "d1f0c0de-0000-4000-8000-000000000003",
+  createdAt: "2026-09-27T12:56:48.428Z",
+};
+
+const SECOND_PAGE_TRANSACTION = {
+  id: "d1f0c0de-0000-4000-8000-000000000004",
+  amount: "57.00",
+  currency: "ILS",
+  vendor: null,
+  subscriptionId: null,
+  originalDescription: "קפה נמרוד",
+  transactionDate: moment().subtract(10, "days").format(DATE_FORMAT),
+};
+
 const renderHomePage = () =>
   render(
     <QueryClientProvider
@@ -130,6 +154,9 @@ describe("HomePage", () => {
     vi.spyOn(levelService, "getUserProgress").mockResolvedValue(USER_PROGRESS);
     vi.spyOn(subscriptionService, "getByUser").mockResolvedValue(SUBSCRIPTIONS);
     vi.spyOn(transactionService, "getByUser").mockResolvedValue(TRANSACTIONS);
+    vi.spyOn(transactionService, "getSummary").mockResolvedValue(
+      TRANSACTION_SUMMARY,
+    );
   });
 
   it("greets the signed-in user", () => {
@@ -258,5 +285,37 @@ describe("HomePage", () => {
     expect(screen.getByText("-320 ₪")).toBeInTheDocument();
     expect(screen.getByText("-850 ₪")).toBeInTheDocument();
     expect(screen.getByText("-240 ₪")).toBeInTheDocument();
+  });
+
+  it("totals the month from the server summary, not from the loaded page", async () => {
+    setSession(SESSION);
+    vi.spyOn(transactionService, "getSummary").mockResolvedValue({
+      ...TRANSACTION_SUMMARY,
+      nonSubscriptionAmount: "5387.00",
+    });
+
+    renderHomePage();
+
+    expect(await screen.findByText("5,487 ₪")).toBeInTheDocument();
+  });
+
+  it("lists transactions from every page in the full month popup", async () => {
+    setSession(SESSION);
+    vi.spyOn(transactionService, "getByUser")
+      .mockResolvedValueOnce({ ...TRANSACTIONS, nextCursor: NEXT_PAGE_CURSOR })
+      .mockResolvedValueOnce({
+        nextCursor: null,
+        items: [SECOND_PAGE_TRANSACTION],
+      });
+
+    renderHomePage();
+    await screen.findByText("1,510 ₪");
+    await userEvent.click(screen.getByText("תנועות"));
+    await userEvent.click(screen.getByText("הכל"));
+
+    expect(await screen.findByText("קפה נמרוד")).toBeInTheDocument();
+    expect(transactionService.getByUser).toHaveBeenLastCalledWith(
+      expect.objectContaining({ batchCursor: NEXT_PAGE_CURSOR }),
+    );
   });
 });

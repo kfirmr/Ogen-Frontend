@@ -1,3 +1,4 @@
+import type { IBatchCursor } from "./batch.interface";
 import type { IVendorSummary } from "./vendor.interface";
 
 export interface ITransaction {
@@ -23,4 +24,20 @@ export interface IGetTransactionsRequest {
   fromDate?: string;
   importId?: string;
   batchSize?: number;
+  batchCursor?: IBatchCursor | null;
+}
+
+export interface ICategoryTotal {
+  amount: string;
+  category: string | null;
+}
+
+export interface ITransactionSummary {
+  categories: ICategoryTotal[];
+  nonSubscriptionAmount: string;
+}
+
+export interface IGetTransactionSummaryRequest {
+  toDate: string;
+  fromDate: string;
 }
