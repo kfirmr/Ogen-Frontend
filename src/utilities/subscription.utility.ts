@@ -57,12 +57,6 @@ const getMonthlyAmount = (subscription: ISubscription): number => {
 const getSegmentColor = (index: number): string =>
   SUBSCRIPTION_SEGMENT_COLORS[index % SUBSCRIPTION_SEGMENT_COLORS.length];
 
-const getSubscriptionsMonthlySum = (subscriptions: ISubscription[]): number =>
-  subscriptions.reduce(
-    (sum, subscription) => sum + getMonthlyAmount(subscription),
-    0,
-  );
-
 export const toSubscriptionView = (
   subscription: ISubscription,
 ): ISubscriptionView => ({
@@ -108,11 +102,14 @@ export const toSubscriptionChargeSegments = (
     label: getSubscriptionName(charge.subscription),
   }));
 
-export const getSubscriptionsTotal = (
-  subscriptions: ISubscription[],
+export const sumChargeAmounts = (charges: ISubscriptionCharge[]): number =>
+  charges.reduce((sum, charge) => sum + parseAmount(charge.amount), 0);
+
+const getSubscriptionChargesTotal = (
+  charges: ISubscriptionCharge[],
 ): string => {
-  const total = getSubscriptionsMonthlySum(subscriptions);
-  const currency = subscriptions[0]?.currency ?? DEFAULT_CURRENCY;
+  const total = Math.round(sumChargeAmounts(charges));
+  const currency = charges[0]?.subscription.currency ?? DEFAULT_CURRENCY;
 
   return (
     formatMoney({ currency, amount: String(total) }) ??
@@ -120,10 +117,11 @@ export const getSubscriptionsTotal = (
   );
 };
 
+// What cancelling the subscriptions charged this month would save, matching the month on screen.
 export const getSubscriptionsSavingsBadge = (
-  subscriptions: ISubscription[],
+  charges: ISubscriptionCharge[],
 ): string =>
-  `${SUBSCRIPTION_LABELS.SAVINGS_BADGE_PREFIX} ${getSubscriptionsTotal(subscriptions)} ${SUBSCRIPTION_LABELS.SAVINGS_BADGE_SUFFIX}`;
+  `${SUBSCRIPTION_LABELS.SAVINGS_BADGE_PREFIX} ${getSubscriptionChargesTotal(charges)} ${SUBSCRIPTION_LABELS.SAVINGS_BADGE_SUFFIX}`;
 
 export const getSubscriptionsSubtitle = (count: number): string =>
   `${count} מנויים פעילים`;
