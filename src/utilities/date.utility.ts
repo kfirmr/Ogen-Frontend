@@ -90,3 +90,6 @@ export const getRecentMonths = ({
       fullLabel: HEBREW_MONTH_FULL_NAMES[monthIndex],
     };
   });
+
+export const toNewestFirst = (months: IMonthOption[]): IMonthOption[] =>
+  [...months].reverse();
