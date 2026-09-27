@@ -70,14 +70,13 @@ const BankConnected: FC<IBankConnectedProps> = ({
       </div>
 
       {!isConfirmingDisconnect && (
-        <div style={styles.disconnectLinkRow}>
-          <Button
-            variant="text"
-            sx={styles.disconnectLink}
-            text={CONNECTED_ACCOUNT_LABELS.DISCONNECT}
-            onClick={() => setIsConfirmingDisconnect(true)}
-          />
-        </div>
+        <Button
+          size="small"
+          variant="warningOutline"
+          sx={styles.disconnectButton}
+          text={CONNECTED_ACCOUNT_LABELS.DISCONNECT}
+          onClick={() => setIsConfirmingDisconnect(true)}
+        />
       )}
 
       {isConfirmingDisconnect && (
