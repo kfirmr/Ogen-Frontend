@@ -41,12 +41,17 @@ const BankConnectCard = () => {
         elapsedLabel={bankConnect.elapsedLabel}
       />
     ),
-    [BANK_CONNECT_STEPS.ACTIVE]: () => (
-      <BankConnected
-        companyName={bankConnect.company.name}
-        onConnectAnother={bankConnect.pickAnother}
-      />
-    ),
+    [BANK_CONNECT_STEPS.ACTIVE]: () =>
+      bankConnect.accountView === null ? null : (
+        <BankConnected
+          account={bankConnect.accountView}
+          onDisconnect={bankConnect.disconnect}
+          isJustConnected={bankConnect.isJustConnected}
+          isDisconnecting={bankConnect.isDisconnecting}
+          disconnectError={bankConnect.disconnectError}
+          onClearDisconnectError={bankConnect.clearDisconnectError}
+        />
+      ),
     [BANK_CONNECT_STEPS.INVALID]: () => (
       <BankInvalidCredentials
         onRetry={bankConnect.retry}
@@ -55,6 +60,10 @@ const BankConnectCard = () => {
       />
     ),
   };
+
+  if (bankConnect.isResolvingSavedAccount) {
+    return null;
+  }
 
   return stepViews[bankConnect.step]();
 };
