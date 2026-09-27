@@ -15,8 +15,8 @@ import { formatMoney } from "./money.utility";
 import { getVendorCategoryIcon } from "./vendor.utility";
 import { DEFAULT_CURRENCY } from "../constants/money.constants";
 import type { IExpenseSegment } from "../interfaces/expense.interface";
-import type { ITransaction } from "../interfaces/transaction.interface";
 import { getNonSubscriptionExpensesTotal } from "./transaction.utility";
+import type { ITransactionSummary } from "../interfaces/transaction.interface";
 
 const getSubscriptionName = (subscription: ISubscription): string => {
   if (subscription.vendor == null) {
@@ -113,13 +113,12 @@ export const getSubscriptionsTotal = (
 
 export const getTotalExpenses = (
   subscriptions: ISubscription[],
-  transactions: ITransaction[],
+  summary: ITransactionSummary,
 ): string => {
   const total =
     getSubscriptionsMonthlySum(subscriptions) +
-    getNonSubscriptionExpensesTotal(transactions);
-  const currency =
-    subscriptions[0]?.currency ?? transactions[0]?.currency ?? DEFAULT_CURRENCY;
+    getNonSubscriptionExpensesTotal(summary);
+  const currency = subscriptions[0]?.currency ?? DEFAULT_CURRENCY;
 
   return (
     formatMoney({ currency, amount: String(total) }) ??

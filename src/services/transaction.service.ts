@@ -1,14 +1,21 @@
 import type {
   ITransaction,
+  ITransactionSummary,
   IGetTransactionsRequest,
+  IGetTransactionSummaryRequest,
 } from "../interfaces/transaction.interface";
+
+import {
+  toTransactionBatch,
+  toTransactionSummary,
+} from "../utilities/transaction-response.utility";
 
 import { apiClient } from "./api-client";
 import type { IBatchResult } from "../interfaces/batch.interface";
-import { toTransactionBatch } from "../utilities/transaction-response.utility";
 
 const TRANSACTION_ENDPOINTS = {
   SEARCH: "/transaction/search",
+  SUMMARY: "/transaction/summary",
 } as const;
 
 class TransactionService {
@@ -21,6 +28,17 @@ class TransactionService {
     );
 
     return toTransactionBatch(response.data);
+  }
+
+  async getSummary(
+    request: IGetTransactionSummaryRequest,
+  ): Promise<ITransactionSummary> {
+    const response = await apiClient.post<unknown>(
+      TRANSACTION_ENDPOINTS.SUMMARY,
+      request,
+    );
+
+    return toTransactionSummary(response.data);
   }
 }
 

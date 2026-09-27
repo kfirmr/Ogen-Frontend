@@ -6,6 +6,11 @@ import {
 } from "@tanstack/react-query";
 
 import {
+  TRANSACTIONS_QUERY_KEY,
+  TRANSACTION_SUMMARY_QUERY_KEY,
+} from "../constants/transaction.constants";
+
+import {
   getElapsedMs,
   findBankCompany,
   isValidationSlow,
@@ -38,7 +43,6 @@ import { INSIGHTS_QUERY_KEY } from "../constants/insight.constants";
 import { USER_PROGRESS_QUERY_KEY } from "../constants/level.constants";
 import { connectBankAction } from "../actions/bank-connection.actions";
 import { bankConnectionService } from "../services/bank-connection.service";
-import { TRANSACTIONS_QUERY_KEY } from "../constants/transaction.constants";
 import { SUBSCRIPTIONS_QUERY_KEY } from "../constants/subscription.constants";
 
 interface IBankConnectState {
@@ -66,6 +70,7 @@ const CONNECTED_ACCOUNT_QUERY_KEYS = [
   INSIGHTS_QUERY_KEY,
   TRANSACTIONS_QUERY_KEY,
   SUBSCRIPTIONS_QUERY_KEY,
+  TRANSACTION_SUMMARY_QUERY_KEY,
   USER_PROGRESS_QUERY_KEY,
 ];
 

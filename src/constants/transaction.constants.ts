@@ -2,7 +2,13 @@ import { theme } from "./theme.constants";
 
 export const TRANSACTIONS_QUERY_KEY = ["transaction", "recent"] as const;
 
-export const RECENT_TRANSACTIONS_REQUEST = { batchSize: 50 } as const;
+export const TRANSACTION_SUMMARY_QUERY_KEY = [
+  "transaction",
+  "summary",
+] as const;
+
+// The server's largest page, so a typical month arrives in a single request.
+export const MONTH_TRANSACTIONS_REQUEST = { batchSize: 100 } as const;
 
 export const RECENT_TRANSACTIONS_COUNT = 3;
 

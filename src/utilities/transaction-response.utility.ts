@@ -1,7 +1,12 @@
+import type {
+  ITransaction,
+  ICategoryTotal,
+  ITransactionSummary,
+} from "../interfaces/transaction.interface";
+
 import { isRecord } from "./free-text-response.utility";
 import { isVendorSummary } from "./vendor-response.utility";
-import type { IBatchResult } from "../interfaces/batch.interface";
-import type { ITransaction } from "../interfaces/transaction.interface";
+import type { IBatchCursor, IBatchResult } from "../interfaces/batch.interface";
 
 const isTransaction = (value: unknown): value is ITransaction => {
   if (!isRecord(value)) {
@@ -26,6 +31,14 @@ const isTransaction = (value: unknown): value is ITransaction => {
   );
 };
 
+const isBatchCursor = (value: unknown): value is IBatchCursor => {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return typeof value.id === "string" && typeof value.createdAt === "string";
+};
+
 const isTransactionBatch = (
   value: unknown,
 ): value is IBatchResult<ITransaction> => {
@@ -37,7 +50,10 @@ const isTransactionBatch = (
     return false;
   }
 
-  return value.items.every(isTransaction);
+  const hasValidCursor =
+    value.nextCursor === null || isBatchCursor(value.nextCursor);
+
+  return hasValidCursor && value.items.every(isTransaction);
 };
 
 export const toTransactionBatch = (
@@ -45,6 +61,37 @@ export const toTransactionBatch = (
 ): IBatchResult<ITransaction> => {
   if (!isTransactionBatch(data)) {
     throw new Error("Invalid transactions response structure");
+  }
+
+  return data;
+};
+
+const isCategoryTotal = (value: unknown): value is ICategoryTotal => {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  const hasAmount = typeof value.amount === "string";
+  const hasValidCategory =
+    value.category === null || typeof value.category === "string";
+
+  return hasAmount && hasValidCategory;
+};
+
+const isTransactionSummary = (value: unknown): value is ITransactionSummary => {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  const hasCategories =
+    Array.isArray(value.categories) && value.categories.every(isCategoryTotal);
+
+  return hasCategories && typeof value.nonSubscriptionAmount === "string";
+};
+
+export const toTransactionSummary = (data: unknown): ITransactionSummary => {
+  if (!isTransactionSummary(data)) {
+    throw new Error("Invalid transaction summary response structure");
   }
 
   return data;

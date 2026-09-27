@@ -41,6 +41,7 @@ import { useUserProgress } from "../../hooks/user-progress.hook";
 import { useSubscriptions } from "../../hooks/subscriptions.hook";
 import MonthPicker from "../../components/MonthPicker/MonthPicker";
 import BankConnectCard from "./components/BankConnect/BankConnectCard";
+import { useTransactionSummary } from "../../hooks/transaction-summary.hook";
 import { useSubscriptionCancellation } from "../../hooks/subscription-cancellation.hook";
 import CancelSubscriptionPopup from "../../components/CancelSubscriptionPopup/CancelSubscriptionPopup";
 
@@ -56,14 +57,15 @@ const HomePage = () => {
   const userProgress = useUserProgress();
   const subscriptions = useSubscriptions();
   const transactions = useTransactions(selectedMonthKey);
+  const transactionSummary = useTransactionSummary(selectedMonthKey);
   const cancellation = useSubscriptionCancellation();
 
   const name = user?.fullName ?? "";
-  const categoryExpenses = toCategoryExpenses(transactions);
+  const categoryExpenses = toCategoryExpenses(transactionSummary);
   const subscriptionViews = toSubscriptionViews(subscriptions);
   const transactionViews = toRecentTransactionViews(transactions);
   const allTransactionViews = toTransactionViews(transactions);
-  const nonSubscriptionSegment = toNonSubscriptionSegment(transactions);
+  const nonSubscriptionSegment = toNonSubscriptionSegment(transactionSummary);
   const subscriptionSegments = toSubscriptionSegments(subscriptions);
   const foundMoneySegments =
     nonSubscriptionSegment == null
@@ -76,7 +78,7 @@ const HomePage = () => {
         totalLabel="סה״כ הוצאות"
         segments={foundMoneySegments}
         badgeText={getSubscriptionsSavingsBadge(subscriptions)}
-        totalAmount={getTotalExpenses(subscriptions, transactions)}
+        totalAmount={getTotalExpenses(subscriptions, transactionSummary)}
       />
     ),
     subs: (
