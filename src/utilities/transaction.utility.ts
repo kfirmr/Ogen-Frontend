@@ -21,10 +21,10 @@ import type {
   ICategoryTotal,
   ITransactionView,
   ITransactionSummary,
-  ISubscriptionCharge,
 } from "../interfaces/transaction.interface";
 
 import { DATE_FORMAT } from "../constants/date.constants";
+import { sumChargeAmounts } from "./subscription.utility";
 import { DEFAULT_CURRENCY } from "../constants/money.constants";
 import { formatDate, getDaysAgo, normalizeDate } from "./date.utility";
 import { FALLBACK_VENDOR_CATEGORY } from "../constants/vendor.constants";
@@ -122,9 +122,6 @@ export const toNonSubscriptionSegment = (
     label: TRANSACTION_LABELS.NON_SUBSCRIPTION_EXPENSES,
   };
 };
-
-const sumChargeAmounts = (charges: ISubscriptionCharge[]): number =>
-  charges.reduce((sum, charge) => sum + parseAmount(charge.amount), 0);
 
 const getSummaryCurrency = (summary: ITransactionSummary): string =>
   summary.subscriptionCharges[0]?.subscription.currency ?? DEFAULT_CURRENCY;

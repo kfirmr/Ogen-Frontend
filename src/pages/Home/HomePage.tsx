@@ -38,7 +38,6 @@ import PageHeader from "../../components/PageHeader/PageHeader";
 import { useTransactions } from "../../hooks/transactions.hook";
 import { MONTHS_TO_SHOW } from "../../constants/date.constants";
 import { useUserProgress } from "../../hooks/user-progress.hook";
-import { useSubscriptions } from "../../hooks/subscriptions.hook";
 import MonthPicker from "../../components/MonthPicker/MonthPicker";
 import BankConnectCard from "./components/BankConnect/BankConnectCard";
 import { useTransactionSummary } from "../../hooks/transaction-summary.hook";
@@ -55,7 +54,6 @@ const HomePage = () => {
     months[months.length - 1].key,
   );
   const userProgress = useUserProgress();
-  const subscriptions = useSubscriptions();
   const transactions = useTransactions(selectedMonthKey);
   const transactionSummary = useTransactionSummary(selectedMonthKey);
   const cancellation = useSubscriptionCancellation();
@@ -82,7 +80,9 @@ const HomePage = () => {
         totalLabel="סה״כ הוצאות"
         segments={foundMoneySegments}
         totalAmount={getTotalExpenses(transactionSummary)}
-        badgeText={getSubscriptionsSavingsBadge(subscriptions)}
+        badgeText={getSubscriptionsSavingsBadge(
+          transactionSummary.subscriptionCharges,
+        )}
       />
     ),
     subs: (

@@ -206,7 +206,7 @@ describe("HomePage", () => {
     renderHomePage();
 
     expect(await screen.findByText("1,840 ₪")).toBeInTheDocument();
-    expect(screen.getByText("מצאנו 100 ₪ לחיסכון")).toBeInTheDocument();
+    expect(screen.getByText("מצאנו 430 ₪ לחיסכון")).toBeInTheDocument();
     expect(screen.getByText("70 ₪")).toBeInTheDocument();
     expect(screen.getByText("360 ₪")).toBeInTheDocument();
     expect(screen.getByText("Netflix")).toBeInTheDocument();
@@ -334,6 +334,7 @@ describe("HomePage", () => {
 
     renderHomePage();
     await screen.findByText("1,480 ₪");
+    expect(screen.getByText("מצאנו 70 ₪ לחיסכון")).toBeInTheDocument();
     await userEvent.click(screen.getByText("מנויים"));
 
     expect(await screen.findByText("Netflix")).toBeInTheDocument();
