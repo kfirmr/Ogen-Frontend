@@ -161,15 +161,10 @@ export const useStyles = () =>
       fontFamily: theme.fonts.body,
       unicodeBidi: "isolate" as const,
     },
-    disconnectLinkRow: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    disconnectLink: {
+    disconnectButton: {
+      width: "100%",
       fontSize: 15,
-      padding: "10px 6px",
-      color: theme.colors.orangeDark,
+      padding: "11px 16px",
     },
     disconnectConfirm: {
       gap: 12,
