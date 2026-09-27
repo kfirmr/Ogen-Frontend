@@ -229,7 +229,8 @@ export const useBankConnect = () => {
 
   const pickAnother = () => setState(INITIAL_STATE);
 
-  // The list is refetched before the picker returns, so the removed account never flashes back.
+  // Disconnecting deletes the account's transactions and subscriptions, so every financial view is
+  // refetched, and the list before the picker returns so the removed account never flashes back.
   const disconnect = async () => {
     if (account === null || state.isDisconnecting) {
       return;
@@ -253,9 +254,7 @@ export const useBankConnect = () => {
       return;
     }
 
-    await queryClient.invalidateQueries({
-      queryKey: BANK_CONNECTIONS_LIST_QUERY_KEY,
-    });
+    await refreshConnectedAccountData(queryClient);
     setState(INITIAL_STATE);
   };
 

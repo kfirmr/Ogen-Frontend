@@ -212,7 +212,7 @@ export const CONNECTED_ACCOUNT_LABELS = {
   AWAITING_FIRST_SYNC: "ממתין לסנכרון ראשון",
   DISCONNECT_FAILED: "הניתוק נכשל. נסה שוב בעוד רגע.",
   DISCONNECT_BODY:
-    "נפסיק למשוך עסקאות חדשות ונמחק את פרטי ההתחברות. העסקאות שכבר נמשכו יישארו.",
+    "נפסיק למשוך עסקאות, ונמחק את פרטי ההתחברות, את העסקאות שנמשכו מהחשבון ואת המנויים שחויבו רק בו.",
   DISCONNECT_TITLE: (companyName: string) => `לנתק את ${companyName}?`,
   JUST_CONNECTED: "החשבון חובר — קיבלת",
 } as const;

@@ -1,3 +1,8 @@
+import {
+  TRANSACTIONS_QUERY_KEY,
+  TRANSACTION_SUMMARY_QUERY_KEY,
+} from "../../../../constants/transaction.constants";
+
 import BankConnectCard from "./BankConnectCard";
 import userEvent from "@testing-library/user-event";
 import { render, screen, act } from "@testing-library/react";
@@ -45,13 +50,13 @@ const ISRACARD_ACCOUNT: IBankConnection = {
   },
 };
 
-const renderCard = () =>
+const renderCard = (
+  queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  }),
+) =>
   render(
-    <QueryClientProvider
-      client={
-        new QueryClient({ defaultOptions: { queries: { retry: false } } })
-      }
-    >
+    <QueryClientProvider client={queryClient}>
       <BankConnectCard />
     </QueryClientProvider>,
   );
@@ -185,19 +190,30 @@ describe("BankConnectCard", () => {
       .mockResolvedValue([]);
     const disconnect = vi
       .spyOn(bankConnectionService, "disconnect")
-      .mockResolvedValue(undefined);
+      .mockImplementation(() => Promise.resolve());
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    const invalidateQueries = vi.spyOn(queryClient, "invalidateQueries");
 
-    renderCard();
+    renderCard(queryClient);
     await user.click(
       await screen.findByRole("button", { name: "ניתוק החשבון" }),
     );
 
     expect(screen.getByText("לנתק את ישראכרט?")).toBeInTheDocument();
+    expect(screen.getByText(/ואת המנויים שחויבו רק בו/)).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "נתק" }));
 
     expect(disconnect).toHaveBeenCalledWith(ISRACARD_ACCOUNT.id);
     expect(await screen.findByText("חיבור חשבון")).toBeInTheDocument();
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: TRANSACTIONS_QUERY_KEY,
+    });
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: TRANSACTION_SUMMARY_QUERY_KEY,
+    });
   });
 
   it("keeps the account and explains when disconnecting fails", async () => {
